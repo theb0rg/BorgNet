@@ -27,7 +27,7 @@ namespace BorgNetLib
 				Message message = new Message(Message);
 				NetworkStream serverStream = socket.GetStream();
 
-			byte[] outStream = System.Text.Encoding.ASCII.GetBytes(message.SerializeObject());
+			byte[] outStream = System.Text.Encoding.ASCII.GetBytes(message.SerializeObject().Trim());
 			serverStream.Write(outStream, 0, outStream.Length);
 			serverStream.Flush();
 			
@@ -46,7 +46,18 @@ namespace BorgNetLib
 		}
 
 		public bool Connected{
-			get{return socket.Connected; }
+			get{
+				if( socket.Client.Poll( 0, SelectMode.SelectRead ) )
+				{
+					byte[] buff = new byte[1];
+					if( socket.Client.Receive( buff, SocketFlags.Peek ) == 0 )
+					{
+						// Client disconnected
+						return false;
+					}
+				}
+				return socket.Connected; 
+				}
 		}
 
 		public bool Login(String Username, String Password)

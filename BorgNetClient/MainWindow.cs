@@ -5,7 +5,7 @@ using BorgNetLib;
 
 public partial class MainWindow: Gtk.Window
 {	
-	NetService service = new NetService();
+	NetService service = new NetService("127.0.0.1",1234);
 
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{

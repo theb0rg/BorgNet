@@ -4,6 +4,9 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Xml.Linq;
+using System.Xml;
+using BorgNetLib;
 
 namespace BorgNetServer
 {
@@ -64,10 +67,20 @@ namespace BorgNetServer
 					networkStream.Read(bytesFrom, 0, (int)clientSocket.ReceiveBufferSize);
 					dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom).Trim();
 					//dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
-					Console.WriteLine(" >> " + "From client- "+ dataFromClient);
+					Console.WriteLine(dataFromClient);
+
+					if(ValidXml (dataFromClient))
+						Console.WriteLine("The XML is Valid!");
+						else
+						Console.WriteLine("Bad XML.");
+
+					if(CanBeDeserialized(dataFromClient))
+						Console.WriteLine("The XML can be deserialized!");
+						else
+					    Console.WriteLine("Cannot be deserialized : (");
 					
 					rCount = Convert.ToString(requestCount);
-					serverResponse = "Server to clinet" + rCount;
+					serverResponse = "Message recieved. Count: " + rCount;
 					sendBytes = Encoding.ASCII.GetBytes(serverResponse);
 					networkStream.Write(sendBytes, 0, sendBytes.Length);
 					networkStream.Flush();
@@ -82,6 +95,36 @@ namespace BorgNetServer
 					Console.WriteLine("Disconnecting client due to: " + ex.ToString());
 					break;
 				}
+			}
+		}
+
+		static bool ValidXml (string xml)
+		{
+
+			try
+			{
+				XDocument doc = XDocument.Parse(xml);
+
+				//TODO: Check validity of XML here. 
+				return true;
+			}
+			catch(Exception e){
+				Console.WriteLine(e);
+				return false;
+			}
+		}
+
+		static bool CanBeDeserialized(string message)
+		{
+			try
+			{
+				Message msg = (Message)message.XmlDeserialize(typeof(Message));
+				
+				//TODO: Check validity of XML here. 
+				return true;
+			}
+			catch(Exception e){
+				return false;
 			}
 		}
 	}

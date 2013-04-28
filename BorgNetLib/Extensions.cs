@@ -16,6 +16,25 @@ namespace BorgNetLib
 			}
 		}
 
+		public static T XmlDeserialize<T>(this string objectData)
+		{
+			return (T)XmlDeserialize(objectData, typeof(T));
+		}
+		
+		public static object XmlDeserialize(this string objectData, Type type)
+		{
+			var serializer = new XmlSerializer(type);
+			object result;
+			
+			using (TextReader reader = new StringReader(objectData))
+			{
+				result = serializer.Deserialize(reader);
+			}
+			
+			return result;
+		}
+
+
 	}
 }
 
