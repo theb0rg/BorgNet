@@ -3,6 +3,13 @@
 
 public partial class MainWindow
 {
+	private global::Gtk.Alignment alignment1;
+	private global::Gtk.VBox vbox1;
+	private global::Gtk.Button btnMessage;
+	private global::Gtk.Button btnConnect;
+	private global::Gtk.Entry txtMessage;
+	private global::Gtk.Entry txtResponse;
+	
 	protected virtual void Build ()
 	{
 		global::Stetic.Gui.Initialize (this);
@@ -10,6 +17,59 @@ public partial class MainWindow
 		this.Name = "MainWindow";
 		this.Title = global::Mono.Unix.Catalog.GetString ("MainWindow");
 		this.WindowPosition = ((global::Gtk.WindowPosition)(4));
+		// Container child MainWindow.Gtk.Container+ContainerChild
+		this.alignment1 = new global::Gtk.Alignment (0.5F, 0.5F, 1F, 1F);
+		this.alignment1.Name = "alignment1";
+		// Container child alignment1.Gtk.Container+ContainerChild
+		this.vbox1 = new global::Gtk.VBox ();
+		this.vbox1.Name = "vbox1";
+		this.vbox1.Spacing = 6;
+		// Container child vbox1.Gtk.Box+BoxChild
+		this.btnMessage = new global::Gtk.Button ();
+		this.btnMessage.CanFocus = true;
+		this.btnMessage.Name = "btnMessage";
+		this.btnMessage.UseUnderline = true;
+		this.btnMessage.Label = global::Mono.Unix.Catalog.GetString ("Send message");
+		this.vbox1.Add (this.btnMessage);
+		global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.btnMessage]));
+		w1.Position = 0;
+		w1.Expand = false;
+		w1.Fill = false;
+		// Container child vbox1.Gtk.Box+BoxChild
+		this.btnConnect = new global::Gtk.Button ();
+		this.btnConnect.CanFocus = true;
+		this.btnConnect.Name = "btnConnect";
+		this.btnConnect.UseUnderline = true;
+		this.btnConnect.Label = global::Mono.Unix.Catalog.GetString ("Connect to Server");
+		this.vbox1.Add (this.btnConnect);
+		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.btnConnect]));
+		w2.Position = 1;
+		w2.Expand = false;
+		w2.Fill = false;
+		// Container child vbox1.Gtk.Box+BoxChild
+		this.txtMessage = new global::Gtk.Entry ();
+		this.txtMessage.CanFocus = true;
+		this.txtMessage.Name = "txtMessage";
+		this.txtMessage.IsEditable = true;
+		this.txtMessage.InvisibleChar = '●';
+		this.vbox1.Add (this.txtMessage);
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.txtMessage]));
+		w3.Position = 2;
+		w3.Expand = false;
+		w3.Fill = false;
+		// Container child vbox1.Gtk.Box+BoxChild
+		this.txtResponse = new global::Gtk.Entry ();
+		this.txtResponse.CanFocus = true;
+		this.txtResponse.Name = "txtResponse";
+		this.txtResponse.IsEditable = false;
+		this.txtResponse.InvisibleChar = '●';
+		this.vbox1.Add (this.txtResponse);
+		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.txtResponse]));
+		w4.Position = 3;
+		w4.Expand = false;
+		w4.Fill = false;
+		this.alignment1.Add (this.vbox1);
+		this.Add (this.alignment1);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
@@ -17,5 +77,7 @@ public partial class MainWindow
 		this.DefaultHeight = 300;
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
+		this.btnMessage.Clicked += new global::System.EventHandler (this.btnMessage_Click);
+		this.btnConnect.Clicked += new global::System.EventHandler (this.btnConnect_Click);
 	}
 }
