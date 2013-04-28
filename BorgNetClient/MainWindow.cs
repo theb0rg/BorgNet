@@ -19,25 +19,25 @@ public partial class MainWindow: Gtk.Window
 
 	protected void btnConnect_Click (object sender, EventArgs e)
 	{
-		if(clientSocket.Connected)
-		{
-		NetworkStream serverStream = clientSocket.GetStream();
-		byte[] outStream = System.Text.Encoding.ASCII.GetBytes("Message from Client$");
-		serverStream.Write(outStream, 0, outStream.Length);
-		serverStream.Flush();
-		
-		byte[] inStream = new byte[10025];
-		serverStream.Read(inStream, 0, (int)clientSocket.ReceiveBufferSize);
-		string returndata = System.Text.Encoding.ASCII.GetString(inStream);
-
-		txtResponse.Text = returndata; 
-		//msg("Data from Server : " + returndata);
-		}
+		if(!clientSocket.Connected)
+			clientSocket.Connect("127.0.0.1", 1234);
 	}
 
 	protected void btnMessage_Click (object sender, EventArgs e)
 	{
-		if(!clientSocket.Connected)
-		clientSocket.Connect("127.0.0.1", 8888);
+		if(clientSocket.Connected)
+		{
+			NetworkStream serverStream = clientSocket.GetStream();
+			byte[] outStream = System.Text.Encoding.ASCII.GetBytes("Message from Client$");
+			serverStream.Write(outStream, 0, outStream.Length);
+			serverStream.Flush();
+			
+			byte[] inStream = new byte[10025];
+			serverStream.Read(inStream, 0, (int)clientSocket.ReceiveBufferSize);
+			string returndata = System.Text.Encoding.ASCII.GetString(inStream);
+			
+			txtResponse.Text = returndata; 
+			//msg("Data from Server : " + returndata);
+		}
 	}
 }

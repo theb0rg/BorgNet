@@ -13,16 +13,17 @@ namespace BorgNetServer
 
 		public static void Main (string[] args)
 		{
-			TcpListener serverSocket = new TcpListener(IPAddress.Any,8888);
+			TcpListener serverSocket = new TcpListener(IPAddress.Any,1234);
 			try{
 			serverSocket.Start();
 
 			while(true){
 				TcpClient client =  (serverSocket.AcceptTcpClient());
 				Thread ctThread = new Thread(doChat);
-				ctThread.Start();
-				connectedClients.Add(client);
+				ctThread.Start(client);
+				
 				Console.WriteLine ("Client {0} connected! ", client.ToString());
+				connectedClients.Add(client);
 			}
 
 			}
@@ -72,9 +73,14 @@ namespace BorgNetServer
 					networkStream.Flush();
 					Console.WriteLine(" >> " + serverResponse);
 				}
+				catch(SocketException exception)
+				{
+					Console.WriteLine("A client disconnected! ... : (");
+				}
 				catch (Exception ex)
 				{
-					Console.WriteLine(" >> " + ex.ToString());
+					Console.WriteLine("Disconnecting client due to: " + ex.ToString());
+					break;
 				}
 			}
 		}
