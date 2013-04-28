@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BorgNetServer", "BorgNetSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BorgNetClient", "BorgNetClient\BorgNetClient.csproj", "{5FAD7039-6222-485F-B918-E4B99BE3D827}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BorgNetLib", "BorgNetLib\BorgNetLib.csproj", "{A0E6D051-BD99-4D83-B383-29EA26387BB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -19,6 +21,10 @@ Global
 		{9CEF2313-63DB-41C1-BCDE-7B9B5C15A5DF}.Debug|x86.Build.0 = Debug|x86
 		{9CEF2313-63DB-41C1-BCDE-7B9B5C15A5DF}.Release|x86.ActiveCfg = Release|x86
 		{9CEF2313-63DB-41C1-BCDE-7B9B5C15A5DF}.Release|x86.Build.0 = Release|x86
+		{A0E6D051-BD99-4D83-B383-29EA26387BB6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A0E6D051-BD99-4D83-B383-29EA26387BB6}.Debug|x86.Build.0 = Debug|Any CPU
+		{A0E6D051-BD99-4D83-B383-29EA26387BB6}.Release|x86.ActiveCfg = Release|Any CPU
+		{A0E6D051-BD99-4D83-B383-29EA26387BB6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = BorgNetServer\BorgNetServer.csproj

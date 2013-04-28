@@ -152,4 +152,10 @@
   <ItemGroup>
     <Folder Include="Binaries\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BorgNetLib\BorgNetLib.csproj">
+      <Project>{A0E6D051-BD99-4D83-B383-29EA26387BB6}</Project>
+      <Name>BorgNetLib</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

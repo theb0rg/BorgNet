@@ -62,8 +62,8 @@ namespace BorgNetServer
 					requestCount = requestCount + 1;
 					NetworkStream networkStream = clientSocket.GetStream();
 					networkStream.Read(bytesFrom, 0, (int)clientSocket.ReceiveBufferSize);
-					dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom);
-					dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
+					dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom).Trim();
+					//dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
 					Console.WriteLine(" >> " + "From client- "+ dataFromClient);
 					
 					rCount = Convert.ToString(requestCount);
