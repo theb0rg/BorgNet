@@ -58,7 +58,7 @@ namespace BorgNetLib
 				object _connected = CacheService.Get(_connectedKey);
 				if(_connected == null)
 				{
-					_connected = !((socket.Client.Poll(1000, SelectMode.SelectRead) && (socket.Client.Available == 0)) || !socket.Client.Connected);
+					_connected = !((socket.Client.Poll(200, SelectMode.SelectRead) && (socket.Client.Available == 0)) || !socket.Client.Connected);
 					CacheService.Add(_connectedKey,(bool)_connected);
 					return (bool)_connected;
 				}
