@@ -52,7 +52,7 @@ namespace BorgNetLib
 			get{ return socket; }
 			set{ socket = value; }
 		}
-
+		
 		public bool Connected{
 			get{  
 				object _connected = CacheService.Get(_connectedKey);
@@ -72,7 +72,7 @@ namespace BorgNetLib
 		}
 
 		public bool Connect(){
-			if(Connected) return true;
+			//if(Connected) return true;
 
 			try
 			{
@@ -81,7 +81,8 @@ namespace BorgNetLib
 			catch(Exception ex){
 				//log.Error(ex);
 			}
-
+			
+			CacheService.Remove(_connectedKey);
 			return Connected;
 		}
 
