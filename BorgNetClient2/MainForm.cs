@@ -43,6 +43,7 @@ namespace BorgNetClient2
 			if(service.Connect()){
 				EnableChatGui();
 				SetBarConnected();
+			    clockConnection.Enabled = true;
 			}
 			else{
 				DisplayError(String.Format("Cant connect to Server({0}:{1}). Is it on?",ServerIpAdress,ServerPortAdress),"Connection error");
@@ -97,13 +98,8 @@ namespace BorgNetClient2
 		
 		void BtnSendClick(object sender, EventArgs e)
 		{
-			if(service.Connected)
-			{
-				service.SendMessage(txtMessage.Text);
-			}
-			else{
-				DisableChatGui();
-			}
+				txtView.Text += Environment.NewLine + service.SendMessage(txtMessage.Text);
+				txtMessage.Clear();
 		}
 		
 		void ClockConnectionTick(object sender, EventArgs e)
