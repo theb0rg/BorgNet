@@ -3,24 +3,33 @@
 
 public partial class MainWindow
 {
-	private global::Gtk.Alignment alignment1;
+	private global::Gtk.Frame frame1;
+	private global::Gtk.Alignment GtkAlignment;
 	private global::Gtk.VBox vbox1;
 	private global::Gtk.Button btnMessage;
 	private global::Gtk.Button btnConnect;
 	private global::Gtk.Entry txtMessage;
 	private global::Gtk.Entry txtResponse;
+	private global::Gtk.Label lblConnected;
 	
 	protected virtual void Build ()
 	{
 		global::Stetic.Gui.Initialize (this);
 		// Widget MainWindow
+		this.HeightRequest = 200;
 		this.Name = "MainWindow";
 		this.Title = global::Mono.Unix.Catalog.GetString ("MainWindow");
 		this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 		// Container child MainWindow.Gtk.Container+ContainerChild
-		this.alignment1 = new global::Gtk.Alignment (0.5F, 0.5F, 1F, 1F);
-		this.alignment1.Name = "alignment1";
-		// Container child alignment1.Gtk.Container+ContainerChild
+		this.frame1 = new global::Gtk.Frame ();
+		this.frame1.Name = "frame1";
+		this.frame1.ShadowType = ((global::Gtk.ShadowType)(0));
+		// Container child frame1.Gtk.Container+ContainerChild
+		this.GtkAlignment = new global::Gtk.Alignment (0F, 0F, 1F, 1F);
+		this.GtkAlignment.Name = "GtkAlignment";
+		this.GtkAlignment.LeftPadding = ((uint)(12));
+		this.GtkAlignment.BorderWidth = ((uint)(117));
+		// Container child GtkAlignment.Gtk.Container+ContainerChild
 		this.vbox1 = new global::Gtk.VBox ();
 		this.vbox1.Name = "vbox1";
 		this.vbox1.Spacing = 6;
@@ -68,16 +77,21 @@ public partial class MainWindow
 		w4.Position = 3;
 		w4.Expand = false;
 		w4.Fill = false;
-		this.alignment1.Add (this.vbox1);
-		this.Add (this.alignment1);
+		this.GtkAlignment.Add (this.vbox1);
+		this.frame1.Add (this.GtkAlignment);
+		this.lblConnected = new global::Gtk.Label ();
+		this.lblConnected.Name = "lblConnected";
+		this.lblConnected.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Disconnected</b>");
+		this.lblConnected.UseMarkup = true;
+		this.frame1.LabelWidget = this.lblConnected;
+		this.Add (this.frame1);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
-		this.DefaultWidth = 400;
+		this.DefaultWidth = 412;
 		this.DefaultHeight = 300;
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
-		this.btnMessage.Clicked += new global::System.EventHandler (this.btnMessage_Click);
 		this.btnConnect.Clicked += new global::System.EventHandler (this.btnConnect_Click);
 	}
 }

@@ -2,6 +2,7 @@ using System;
 using Gtk;
 using System.Net.Sockets;
 using BorgNetLib;
+using BorgNetClient;
 
 public partial class MainWindow: Gtk.Window
 {	
@@ -20,7 +21,20 @@ public partial class MainWindow: Gtk.Window
 
 	protected void btnConnect_Click (object sender, EventArgs e)
 	{
-			service.Connect();
+		if(service.Connect())
+		{
+		//lblConnected.Text = "Connected";
+			lblConnected.LabelProp = "<b>Connected</b>";
+		lblConnected.RedrawOnAllocate = true;
+		lblConnected.ModifyBg(StateType.Active,GdkColor.Green);
+        //frame1.
+		}
+		else
+		{
+			lblConnected.Text = "Disconnected";
+			lblConnected.RedrawOnAllocate = true;
+			lblConnected.ModifyBg(StateType.Active,GdkColor.Red);
+		}
 	}
 
 	protected void btnMessage_Click (object sender, EventArgs e)

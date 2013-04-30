@@ -1,5 +1,6 @@
 using System;
 using System.Net.Sockets;
+using System.Web.Caching;
 
 namespace BorgNetLib
 {
@@ -8,6 +9,8 @@ namespace BorgNetLib
 		private TcpClient socket = new TcpClient();
 		private String serverIp;
 		private Int32 portNumber;
+		
+		private static String _connectedKey = "connected";
 
 		public NetService ()
 		{
@@ -22,7 +25,8 @@ namespace BorgNetLib
 
 		public string SendMessage(String Message)
 		{
-			if(socket.Connected)
+			try{
+			if(Connected)
 			{
 				Message message = new Message(Message);
 				NetworkStream serverStream = socket.GetStream();
@@ -37,6 +41,10 @@ namespace BorgNetLib
 			return returndata;
 			}
 
+			}
+			catch(Exception e){
+				//Log.Error(e);
+			}
 			return "Not connected, cant send a message!";
 		}
 
@@ -46,18 +54,16 @@ namespace BorgNetLib
 		}
 
 		public bool Connected{
-			get{
-				if( socket.Client.Poll( 0, SelectMode.SelectRead ) )
+			get{  
+				object _connected = CacheService.Get(_connectedKey);
+				if(_connected == null)
 				{
-					byte[] buff = new byte[1];
-					if( socket.Client.Receive( buff, SocketFlags.Peek ) == 0 )
-					{
-						// Client disconnected
-						return false;
-					}
+					_connected = !((socket.Client.Poll(1000, SelectMode.SelectRead) && (socket.Client.Available == 0)) || !socket.Client.Connected);
+					CacheService.Add(_connectedKey,(bool)_connected);
+					return (bool)_connected;
 				}
-				return socket.Connected; 
-				}
+				else return (bool)_connected;
+			}
 		}
 
 		public bool Login(String Username, String Password)
