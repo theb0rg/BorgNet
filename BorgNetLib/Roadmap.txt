@@ -1,0 +1,16 @@
+﻿TODO SOMEWHERE SOMEWHEN:
+3. DB for Server. Log messages, logins etc
+4. DB for Client. Log messages, with common data like Time
+5. Break down stuff and make changelogs
+6. Replace/Append Logging instead of Console...(Log4Net)
+
+
+IN PROGRESS: 
+1. Userstates in Lib. If a user starts writing a message in client, show "name writing..." 
+2. Login/Splashscreen. Make it easy like a simple "connect" and Username. Save username somewhere ? DB?
+
+
+DONE:
+
+
+

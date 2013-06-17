@@ -1,6 +1,7 @@
 using System;
 using System.Net.Sockets;
 using System.Web.Caching;
+using System.Linq;
 
 namespace BorgNetLib
 {
@@ -12,40 +13,15 @@ namespace BorgNetLib
 		
 		private static String _connectedKey = "connected";
 
-		public NetService ()
+		public NetService (ConnectionSetting setting)
 		{
-			serverIp = "127.0.0.1";
-			portNumber = 1234;
+			serverIp = setting.IpAdress;
+			portNumber = Int32.Parse(new String(setting.Port.Where(c => Char.IsDigit(c)).ToArray()));
 		}
-		public NetService (String ServerIp, Int32 PortNumber)
+		internal NetService (String ServerIp, Int32 PortNumber)
 		{
 			this.serverIp = ServerIp;
 			this.portNumber = PortNumber;
-		}
-
-		public string SendMessage(String Message)
-		{
-			try{
-			if(Connected)
-			{
-				Message message = new Message(Message);
-				NetworkStream serverStream = socket.GetStream();
-
-			byte[] outStream = System.Text.Encoding.ASCII.GetBytes(message.SerializeObject().Trim());
-			serverStream.Write(outStream, 0, outStream.Length);
-			serverStream.Flush();
-			
-			byte[] inStream = new byte[10025];
-			serverStream.Read(inStream, 0, (int)socket.ReceiveBufferSize);
-			string returndata = System.Text.Encoding.ASCII.GetString(inStream);
-			return returndata;
-			}
-
-			}
-			catch(Exception e){
-				//Log.Error(e);
-			}
-			return "Not connected, cant send a message!";
 		}
 
 		public TcpClient Socket{
@@ -86,6 +62,20 @@ namespace BorgNetLib
 			return Connected;
 		}
 
+        public void Disconnect()
+        {
+            if (Connected)
+            {
+                socket.Close();
+            }
+        }
+
+        public bool Reconnect()
+        {
+            Disconnect();
+            return Connect();
+        }
+
 		public String ServerIp
 		{
 			get{ return serverIp;}
@@ -95,6 +85,33 @@ namespace BorgNetLib
 			get{ return portNumber.ToString();}
 		}
 
-	}
+
+        internal string SendMessage(string txt, User user)
+        {
+            try
+            {
+                if (Connected)
+                {
+                    Message message = new Message(txt,user);
+                    NetworkStream serverStream = socket.GetStream();
+
+                    byte[] outStream = System.Text.Encoding.ASCII.GetBytes(message.SerializeObject().Trim());
+                    serverStream.Write(outStream, 0, outStream.Length);
+                    serverStream.Flush();
+
+                    byte[] inStream = new byte[10025];
+                    serverStream.Read(inStream, 0, (int)socket.ReceiveBufferSize);
+                    string returndata = System.Text.Encoding.ASCII.GetString(inStream);
+                    return returndata;
+                }
+
+            }
+            catch (Exception e)
+            {
+                //Log.Error(e);
+            }
+            return "Not connected, cant send a message!";
+        }
+    }
 }
 

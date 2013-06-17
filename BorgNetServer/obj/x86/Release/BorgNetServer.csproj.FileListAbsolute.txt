@@ -1,0 +1,3 @@
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\bin\Release\BorgNetServer.exe
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\obj\x86\Release\BorgNetServer.exe

@@ -13,7 +13,8 @@ namespace BorgNetClient2
 	public partial class MainForm : Form
 	{
 		private String defaultTxtMessage = "Enter text here.";
-		private NetService service;
+		//private NetService service;
+        private User user = new User();
 		private String ServerIpAdress = "127.0.0.1";
 		private int ServerPortAdress = 1234;
 		
@@ -21,9 +22,18 @@ namespace BorgNetClient2
 		{
 			InitializeComponent();
 			txtMessage.Text = defaultTxtMessage;
-			service = new NetService(ServerIpAdress,ServerPortAdress);
+            ConnectionSetting connection = new ConnectionSetting(ServerIpAdress, ServerPortAdress.ToString());
+			//service = new NetService();
 			
 			DisableChatGui();
+
+            if (user.Login("UnknownUser","",connection))
+            {
+                EnableChatGui();
+                SetBarConnected();
+                clockConnection.Enabled = true;
+                clockConnection.Start();
+            }
 		}
 		
 		void TxtMessageEnter(object sender, EventArgs e)
@@ -40,10 +50,11 @@ namespace BorgNetClient2
 		
 		void NewToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if(service.Connect()){
+			if(user.Login(user.Name,"TODO: FIX RENTER PASSWORD")){
 				EnableChatGui();
 				SetBarConnected();
 			    clockConnection.Enabled = true;
+			    clockConnection.Start();
 			}
 			else{
 				DisplayError(String.Format("Cant connect to Server({0}:{1}). Is it on?",ServerIpAdress,ServerPortAdress),"Connection error");
@@ -57,7 +68,7 @@ namespace BorgNetClient2
 		
 		public void HandleGuiState(){
 			
-			if(service.Connected)
+			if(user.IsConnected)
 			{
 				EnableChatGui();				
 			}
@@ -98,15 +109,16 @@ namespace BorgNetClient2
 		
 		void BtnSendClick(object sender, EventArgs e)
 		{
-				txtView.Text += Environment.NewLine + service.SendMessage(txtMessage.Text);
+            String text = user.SendMessage(txtMessage.Text);
+				//txtView.Text += Environment.NewLine + service.SendMessage(txtMessage.Text);
 				txtMessage.Clear();
 		}
 		
 		void ClockConnectionTick(object sender, EventArgs e)
 		{
-			if(!service.Connected)
+            if (!user.IsConnected)
 			{
-				if(service.Connect()){
+				if(user.Login(user.Name,"")){
 					SetBarConnected();
 					EnableChatGui();
 				}
@@ -128,5 +140,10 @@ namespace BorgNetClient2
 			  if(txtMessage.Text == defaultTxtMessage)
 		     txtMessage.Text = String.Empty;	
 		}
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
 	}
 }

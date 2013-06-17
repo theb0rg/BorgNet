@@ -35,12 +35,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheService.cs" />
+    <Compile Include="ConnectionSetting.cs" />
+    <Compile Include="ConsoleHelper.cs" />
+    <Compile Include="Enums\ConnectionState.cs" />
+    <Compile Include="Enums\MessageState.cs" />
+    <Compile Include="Enums\PropertyIds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="Property.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="Userstate.cs" />
     <Compile Include="XmlService.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="NetService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Roadmap.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -12,7 +12,7 @@ namespace BorgNetServer
 {
 	class MainClass
 	{
-		private static List<TcpClient> connectedClients = new List<TcpClient>();
+		private static List<User> connectedClients = new List<User>();
 
 		public static void Main (string[] args)
 		{
@@ -22,11 +22,12 @@ namespace BorgNetServer
 
 			while(true){
 				TcpClient client =  (serverSocket.AcceptTcpClient());
-				Thread ctThread = new Thread(doChat);
+				Thread ctThread = new Thread(Accept);
 				ctThread.Start(client);
-				
-				Console.WriteLine ("Client {0} connected! ", client.ToString());
-				connectedClients.Add(client);
+
+                Console.WriteLine("A client connected!");
+
+				//connectedClients.Add(client);
 			}
 
 			}
@@ -35,52 +36,86 @@ namespace BorgNetServer
 				Console.WriteLine (ex);
 			}
 			finally{
-				foreach(TcpClient client in connectedClients){
-					client.Close();
+				foreach(User client in connectedClients){
+                    client.Net.Disconnect();
 				}
 				serverSocket.Stop();
 			}
 
 		}
 
-		private static void doChat(object client)
+        private static String RecieveData(NetworkStream stream, TcpClient client)
+        {
+
+            byte[] bytesFrom = new byte[10025];
+            string dataFromClient = null;
+
+            stream.Read(bytesFrom, 0, (int)client.ReceiveBufferSize);
+            dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom).Trim();
+            dataFromClient = RemoveTroublesomeCharacters(dataFromClient);
+
+            return dataFromClient;
+        }
+        private static bool ValidateXml(String txt)
+        {
+            if (ValidXml(txt))
+                Console.WriteLine("The XML is Valid!");
+            else
+                Console.WriteLine("Bad XML.");
+
+            if (CanBeDeserialized(txt))
+                Console.WriteLine("The XML can be deserialized!");
+            else
+                Console.WriteLine("Cannot be deserialized : (");
+
+            return true;
+        }
+
+		private static void Accept(object client)
 		{
 			if(!(client is TcpClient))
 				return;
 
-			TcpClient clientSocket = (TcpClient)client;
+            TcpClient clientSocket = (TcpClient)client;
+            NetworkStream networkStream = clientSocket.GetStream();
+
+            bool InitialRequest = true;
 
 			int requestCount = 0;
-			byte[] bytesFrom = new byte[10025];
-			string dataFromClient = null;
-			Byte[] sendBytes = null;
-			string serverResponse = null;
-			string rCount = null;
-			requestCount = 0;
+            Byte[] sendBytes = null;
+            string serverResponse = null;
 			
 			while ((true))
 			{
 				try
 				{
+                    Message message = null;
 					requestCount = requestCount + 1;
-					NetworkStream networkStream = clientSocket.GetStream();
-					networkStream.Read(bytesFrom, 0, (int)clientSocket.ReceiveBufferSize);
-					dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom).Trim();
-					//dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
+                    String dataFromClient = RecieveData(networkStream, clientSocket);
+
+                    if (CanBeDeserialized(dataFromClient))
+                    {
+                        message = (Message)dataFromClient.XmlDeserialize(typeof(Message));
+                    }
+
+                    if (InitialRequest)
+                    {
+                        if (message == null)
+                        {
+                            ConsoleHelper.WriteErrorLine("An unknown user logged in. Could not parse message.");
+                        }
+                        else
+                        {
+                            ConsoleHelper.WriteSuccessLine(String.Format("User {0} is logged in.", message.SenderUser.Name));
+                        }
+                        InitialRequest = false;
+                    }
+
 					Console.WriteLine(dataFromClient);
 
-					if(ValidXml (dataFromClient))
-						Console.WriteLine("The XML is Valid!");
-						else
-						Console.WriteLine("Bad XML.");
-
-					if(CanBeDeserialized(dataFromClient))
-						Console.WriteLine("The XML can be deserialized!");
-						else
-					    Console.WriteLine("Cannot be deserialized : (");
+                    ValidateXml(dataFromClient);
 					
-					rCount = Convert.ToString(requestCount);
-					serverResponse = "Message recieved. Count: " + rCount;
+                    serverResponse = "Message recieved. Count: " + requestCount;
 					sendBytes = Encoding.ASCII.GetBytes(serverResponse);
 					networkStream.Write(sendBytes, 0, sendBytes.Length);
 					networkStream.Flush();
@@ -98,6 +133,27 @@ namespace BorgNetServer
 			}
 		}
 
+		public static string RemoveTroublesomeCharacters(string inString)
+{
+    if (inString == null) return null;
+
+    StringBuilder newString = new StringBuilder();
+    char ch;
+
+    for (int i = 0; i < inString.Length; i++)
+    {
+
+        ch = inString[i];
+        // remove any characters outside the valid UTF-8 range as well as all control characters
+        // except tabs and new lines
+        if ((ch < 0x00FD && ch > 0x001F) || ch == '\t' || ch == '\n' || ch == '\r')
+        {
+            newString.Append(ch);
+        }
+    }
+    return newString.ToString();
+
+}
 		static bool ValidXml (string xml)
 		{
 
