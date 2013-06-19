@@ -63,11 +63,12 @@ namespace BorgNetClient2
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.barConnection = new NewProgressBar();
             this.lblConnection = new System.Windows.Forms.Label();
-            this.txtView = new System.Windows.Forms.TextBox();
             this.clockConnection = new System.Windows.Forms.Timer(this.components);
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.barConnection = new NewProgressBar();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // txtMessage
@@ -280,6 +281,28 @@ namespace BorgNetClient2
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.aboutToolStripMenuItem.Text = "&About...";
             // 
+            // lblConnection
+            // 
+            this.lblConnection.Location = new System.Drawing.Point(254, 12);
+            this.lblConnection.Name = "lblConnection";
+            this.lblConnection.Size = new System.Drawing.Size(62, 15);
+            this.lblConnection.TabIndex = 4;
+            this.lblConnection.Text = "Connection";
+            // 
+            // clockConnection
+            // 
+            this.clockConnection.Interval = 1000;
+            this.clockConnection.Tick += new System.EventHandler(this.ClockConnectionTick);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(2, 30);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(253, 348);
+            this.dataGridView1.TabIndex = 5;
+            this.dataGridView1.DataSourceChanged += new System.EventHandler(this.dataGridView1_DataSourceChanged);
+            // 
             // barConnection
             // 
             this.barConnection.BackColor = System.Drawing.Color.Red;
@@ -293,34 +316,13 @@ namespace BorgNetClient2
             this.barConnection.TabIndex = 3;
             this.barConnection.Value = 1;
             // 
-            // lblConnection
-            // 
-            this.lblConnection.Location = new System.Drawing.Point(254, 12);
-            this.lblConnection.Name = "lblConnection";
-            this.lblConnection.Size = new System.Drawing.Size(62, 15);
-            this.lblConnection.TabIndex = 4;
-            this.lblConnection.Text = "Connection";
-            // 
-            // txtView
-            // 
-            this.txtView.Location = new System.Drawing.Point(2, 30);
-            this.txtView.Multiline = true;
-            this.txtView.Name = "txtView";
-            this.txtView.Size = new System.Drawing.Size(250, 348);
-            this.txtView.TabIndex = 5;
-            // 
-            // clockConnection
-            // 
-            this.clockConnection.Interval = 1000;
-            this.clockConnection.Tick += new System.EventHandler(this.ClockConnectionTick);
-            // 
             // MainForm
             // 
             this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(314, 513);
-            this.Controls.Add(this.txtView);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.lblConnection);
             this.Controls.Add(this.barConnection);
             this.Controls.Add(this.btnSend);
@@ -331,14 +333,15 @@ namespace BorgNetClient2
             this.MinimizeBox = false;
             this.Name = "MainForm";
             this.Text = "BorgNetClient2";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
 		}
-		private System.Windows.Forms.Timer clockConnection;
-		private System.Windows.Forms.TextBox txtView;
+        private System.Windows.Forms.Timer clockConnection;
 		private System.Windows.Forms.Label lblConnection;
 		private NewProgressBar barConnection;
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
@@ -366,5 +369,6 @@ namespace BorgNetClient2
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.Button btnSend;
 		private System.Windows.Forms.TextBox txtMessage;
+        private System.Windows.Forms.DataGridView dataGridView1;
 	}
 }

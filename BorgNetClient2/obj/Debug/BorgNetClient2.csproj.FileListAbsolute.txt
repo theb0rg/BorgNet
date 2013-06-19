@@ -1,12 +1,12 @@
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetClient2.exe.config
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetClient2.exe
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetClient2.pdb
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.exe
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.pdb
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.MainForm.resources
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetClient2.exe.config
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetLib.dll
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetLib.pdb
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.csprojResolveAssemblyReference.cache
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.csproj.GenerateResource.Cache
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.LoginSplash.resources
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.MainForm.resources
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.Properties.Resources.resources
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.csproj.GenerateResource.Cache
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.exe
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.pdb

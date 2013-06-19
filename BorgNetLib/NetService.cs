@@ -99,7 +99,7 @@ namespace BorgNetLib
                     serverStream.Write(outStream, 0, outStream.Length);
                     serverStream.Flush();
 
-                    byte[] inStream = new byte[10025];
+                    byte[] inStream = new byte[socket.ReceiveBufferSize];
                     serverStream.Read(inStream, 0, (int)socket.ReceiveBufferSize);
                     string returndata = System.Text.Encoding.ASCII.GetString(inStream);
                     return returndata;

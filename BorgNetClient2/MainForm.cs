@@ -13,17 +13,20 @@ namespace BorgNetClient2
 	public partial class MainForm : Form
 	{
 		private String defaultTxtMessage = "Enter text here.";
-		//private NetService service;
+	
+        List<BorgNetLib.Message> messageQueue = new List<BorgNetLib.Message>();
+        BindingSource source = new BindingSource();
+
         private User user = new User();
 		private String ServerIpAdress = "127.0.0.1";
 		private int ServerPortAdress = 1234;
-		
+
 		public MainForm()
 		{
 			InitializeComponent();
+            CreateGrid();
 			txtMessage.Text = defaultTxtMessage;
             ConnectionSetting connection = new ConnectionSetting(ServerIpAdress, ServerPortAdress.ToString());
-			//service = new NetService();
 			
 			DisableChatGui();
 
@@ -35,6 +38,34 @@ namespace BorgNetClient2
                 clockConnection.Start();
             }
 		}
+
+        
+    public void CreateGrid()
+    {
+      source.DataSource = messageQueue;
+
+      dataGridView1.AutoGenerateColumns = false;
+      dataGridView1.AllowUserToAddRows = false;
+      dataGridView1.DataSource = source;
+
+      DataGridViewTextBoxColumn column1 = new DataGridViewTextBoxColumn();
+      column1.Name = "Text";
+      column1.HeaderText = "Text";
+      column1.DataPropertyName = "Text";
+      dataGridView1.Columns.Add(column1);
+
+     // DataGridViewTextBoxolumn column2 = new DataGridViewTextBoxColumn();
+     // column2.Name = "AccountId";
+     // column2.HeaderText = "Account id";
+     // column2.DataPropertyName = "AccountId";
+     // dataGridView1.Columns.Add(column2);
+
+     // DataGridViewTextBoxColumn column3 = new DataGridViewTextBoxColumn();
+    //  column3.Name = "PatName";
+    //  column3.HeaderText = "Pat name";
+    //  column3.DataPropertyName = "PatName";
+    //  dataGridView1.Columns.Add(column3);
+    }
 		
 		void TxtMessageEnter(object sender, EventArgs e)
 		{
@@ -80,7 +111,7 @@ namespace BorgNetClient2
 		public void DisableChatGui(){
 			txtMessage.ReadOnly = true;
 			btnSend.Enabled = false;	
-			txtView.ReadOnly = true;
+			//txtView.ReadOnly = true;
 
             if(txtMessage.Text == defaultTxtMessage)
 		     txtMessage.Text = String.Empty;			
@@ -89,7 +120,7 @@ namespace BorgNetClient2
 		public void EnableChatGui(){
 			txtMessage.ReadOnly = false;
 			btnSend.Enabled = true;	
-            txtView.ReadOnly = false;
+            //txtView.ReadOnly = false;
             
             if(txtMessage.Text == String.Empty)
 		     txtMessage.Text = defaultTxtMessage;            
@@ -109,9 +140,12 @@ namespace BorgNetClient2
 		
 		void BtnSendClick(object sender, EventArgs e)
 		{
-            String text = user.SendMessage(txtMessage.Text);
-				//txtView.Text += Environment.NewLine + service.SendMessage(txtMessage.Text);
-				txtMessage.Clear();
+
+            String text = user.SendMessage(txtMessage.Text).Trim();
+            messageQueue.Add(new BorgNetLib.Message(txtMessage.Text,user));
+
+            source.ResetBindings(true);
+		    txtMessage.Clear();
 		}
 		
 		void ClockConnectionTick(object sender, EventArgs e)
@@ -145,5 +179,11 @@ namespace BorgNetClient2
         {
             Application.Exit();
         }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            String text = user.SendMessage("EXIT ME").Trim();
+        }
+
 	}
 }
