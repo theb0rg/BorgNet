@@ -13,9 +13,9 @@ namespace BorgNetClient2
 	public partial class MainForm : Form
 	{
 		private String defaultTxtMessage = "Enter text here.";
-	
-        List<BorgNetLib.Message> messageQueue = new List<BorgNetLib.Message>();
-        BindingSource source = new BindingSource();
+
+        DeepBindingList<BorgNetLib.Message> messageQueue = new DeepBindingList<BorgNetLib.Message>();
+
 
         private User user = new User();
 		private String ServerIpAdress = "127.0.0.1";
@@ -42,29 +42,27 @@ namespace BorgNetClient2
         
     public void CreateGrid()
     {
-      source.DataSource = messageQueue;
-
       dataGridView1.AutoGenerateColumns = false;
       dataGridView1.AllowUserToAddRows = false;
-      dataGridView1.DataSource = source;
+      dataGridView1.DataSource = messageQueue;
 
       DataGridViewTextBoxColumn column1 = new DataGridViewTextBoxColumn();
-      column1.Name = "Text";
-      column1.HeaderText = "Text";
-      column1.DataPropertyName = "Text";
+      column1.Name = "Name";
+      column1.HeaderText = "Name";
+      column1.DataPropertyName = "SenderUser.Name";
       dataGridView1.Columns.Add(column1);
 
-     // DataGridViewTextBoxolumn column2 = new DataGridViewTextBoxColumn();
-     // column2.Name = "AccountId";
-     // column2.HeaderText = "Account id";
-     // column2.DataPropertyName = "AccountId";
-     // dataGridView1.Columns.Add(column2);
+      DataGridViewTextBoxColumn column2 = new DataGridViewTextBoxColumn();
+      column2.Name = "Text";
+      column2.HeaderText = "Text";
+      column2.DataPropertyName = "Text";
+      dataGridView1.Columns.Add(column2);
 
-     // DataGridViewTextBoxColumn column3 = new DataGridViewTextBoxColumn();
-    //  column3.Name = "PatName";
-    //  column3.HeaderText = "Pat name";
-    //  column3.DataPropertyName = "PatName";
-    //  dataGridView1.Columns.Add(column3);
+      DataGridViewTextBoxColumn column3 = new DataGridViewTextBoxColumn();
+      column3.Name = "Time";
+      column3.HeaderText = "Time";
+      column3.DataPropertyName = "Time";
+      dataGridView1.Columns.Add(column3);
     }
 		
 		void TxtMessageEnter(object sender, EventArgs e)
@@ -143,8 +141,7 @@ namespace BorgNetClient2
 
             String text = user.SendMessage(txtMessage.Text).Trim();
             messageQueue.Add(new BorgNetLib.Message(txtMessage.Text,user));
-
-            source.ResetBindings(true);
+                        
 		    txtMessage.Clear();
 		}
 		

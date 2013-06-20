@@ -80,7 +80,7 @@ namespace BorgNetClient2
             this.txtMessage.Multiline = true;
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.txtMessage.Size = new System.Drawing.Size(253, 128);
+            this.txtMessage.Size = new System.Drawing.Size(376, 128);
             this.txtMessage.TabIndex = 0;
             this.txtMessage.Text = "Enter text here.";
             this.txtMessage.Enter += new System.EventHandler(this.TxtMessageEnter);
@@ -94,7 +94,7 @@ namespace BorgNetClient2
             this.btnSend.FlatAppearance.BorderSize = 0;
             this.btnSend.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSend.Font = new System.Drawing.Font("Segoe UI Symbol", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSend.Location = new System.Drawing.Point(253, 384);
+            this.btnSend.Location = new System.Drawing.Point(383, 384);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(62, 128);
             this.btnSend.TabIndex = 1;
@@ -111,7 +111,7 @@ namespace BorgNetClient2
             this.helpToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(314, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(445, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -283,7 +283,7 @@ namespace BorgNetClient2
             // 
             // lblConnection
             // 
-            this.lblConnection.Location = new System.Drawing.Point(254, 12);
+            this.lblConnection.Location = new System.Drawing.Point(383, 9);
             this.lblConnection.Name = "lblConnection";
             this.lblConnection.Size = new System.Drawing.Size(62, 15);
             this.lblConnection.TabIndex = 4;
@@ -299,15 +299,14 @@ namespace BorgNetClient2
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(2, 30);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(253, 348);
+            this.dataGridView1.Size = new System.Drawing.Size(376, 348);
             this.dataGridView1.TabIndex = 5;
-            this.dataGridView1.DataSourceChanged += new System.EventHandler(this.dataGridView1_DataSourceChanged);
             // 
             // barConnection
             // 
             this.barConnection.BackColor = System.Drawing.Color.Red;
             this.barConnection.ForeColor = System.Drawing.Color.Red;
-            this.barConnection.Location = new System.Drawing.Point(254, 30);
+            this.barConnection.Location = new System.Drawing.Point(384, 27);
             this.barConnection.MarqueeAnimationSpeed = 0;
             this.barConnection.Maximum = 1;
             this.barConnection.Name = "barConnection";
@@ -321,7 +320,7 @@ namespace BorgNetClient2
             this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(314, 513);
+            this.ClientSize = new System.Drawing.Size(445, 513);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.lblConnection);
             this.Controls.Add(this.barConnection);

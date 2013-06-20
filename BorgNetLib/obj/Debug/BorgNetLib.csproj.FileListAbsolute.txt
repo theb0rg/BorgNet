@@ -2,3 +2,4 @@ C:\Users\BORG\Documents\Projects\BorgNet\BorgNetLib\bin\Debug\BorgNetLib.dll
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetLib\bin\Debug\BorgNetLib.pdb
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetLib\obj\Debug\BorgNetLib.dll
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetLib\obj\Debug\BorgNetLib.pdb
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetLib\obj\Debug\BorgNetLib.csprojResolveAssemblyReference.cache
