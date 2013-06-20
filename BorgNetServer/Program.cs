@@ -35,6 +35,9 @@ namespace BorgNetServer
                                 Console.WriteLine(String.Format("{0} {1}",i+1,user.Name));
                             }
                             break;
+                        case ConsoleKey.D2:
+                            Console.WriteLine(Server.NumberOfTicks);
+                            break;
                         default:
                             break;
                     }

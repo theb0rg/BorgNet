@@ -12,6 +12,7 @@ namespace BorgNetServer
 {
     public class Server
     {
+        public List<Message> messageQueue = new List<Message>();
 
         public void AcceptConnections()
         {     
@@ -40,6 +41,25 @@ namespace BorgNetServer
 				}
 				serverSocket.Stop();
 			}
+        }
+
+        public void Broadcast(Message message)
+        {
+            foreach (User client in MainClass.connectedClients)
+            {
+                if (client.Name != message.SenderUser.Name)
+                {
+                    if (client.Net.Connected)
+                    {
+                        Byte[] sendBytes = null;
+                        String broadcast = message.SerializeObject<Message>();
+                        sendBytes = Encoding.ASCII.GetBytes(broadcast);
+                        NetworkStream stream = client.Net.Socket.GetStream();
+                        stream.Write(sendBytes, 0, sendBytes.Length);
+                        stream.Flush();
+                    }
+                }
+            }
         }
 
         private static String RecieveData(NetworkStream stream, TcpClient client)
@@ -84,7 +104,7 @@ namespace BorgNetServer
             string serverResponse = null;
             User user = null;
 
-            while ((true))
+            while (true)
             {
                 try
                 {
@@ -95,6 +115,7 @@ namespace BorgNetServer
                     if (CanBeDeserialized(dataFromClient))
                     {
                         message = (Message)dataFromClient.XmlDeserialize(typeof(Message));
+                        messageQueue.Add(message);
                     }
 
                     if (InitialRequest)
@@ -109,10 +130,11 @@ namespace BorgNetServer
                         }
 
                         user = message.SenderUser;
+                        user.Net.Socket = clientSocket;
                         MainClass.connectedClients.Add(user);
                         InitialRequest = false;
                     }
-
+                    Broadcast(message);
                     Console.WriteLine(dataFromClient);
 
                     ValidateXml(dataFromClient);
@@ -190,5 +212,7 @@ namespace BorgNetServer
                 return false;
             }
         }
+
+        public static int NumberOfTicks { get; set; }
     }
 }

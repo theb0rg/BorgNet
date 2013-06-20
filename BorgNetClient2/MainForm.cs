@@ -4,6 +4,10 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BorgNetLib;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using System.Linq;
 
 namespace BorgNetClient2
 {
@@ -18,10 +22,10 @@ namespace BorgNetClient2
 
 
         private User user = new User();
-		private String ServerIpAdress = "127.0.0.1";
+		private String ServerIpAdress = "85.230.218.187";
 		private int ServerPortAdress = 1234;
 
-		public MainForm()
+		public MainForm(String Username)
 		{
 			InitializeComponent();
             CreateGrid();
@@ -30,13 +34,16 @@ namespace BorgNetClient2
 			
 			DisableChatGui();
 
-            if (user.Login("UnknownUser","",connection))
+            if (user.Login(Username,"",connection))
             {
                 EnableChatGui();
                 SetBarConnected();
                 clockConnection.Enabled = true;
                 clockConnection.Start();
             }
+
+            Thread ctThread = new Thread(new ThreadStart(this.SyncThread));
+            ctThread.Start();
 		}
 
         
@@ -44,6 +51,7 @@ namespace BorgNetClient2
     {
       dataGridView1.AutoGenerateColumns = false;
       dataGridView1.AllowUserToAddRows = false;
+      dataGridView1.RowHeadersVisible = false;
       dataGridView1.DataSource = messageQueue;
 
       DataGridViewTextBoxColumn column1 = new DataGridViewTextBoxColumn();
@@ -90,7 +98,7 @@ namespace BorgNetClient2
 			}
 		}
 		
-		public void DisplayError(String Message, String Caption)
+		public static void DisplayError(String Message, String Caption)
 		{			
 			MessageBox.Show(Message,Caption,MessageBoxButtons.OK,MessageBoxIcon.Error,MessageBoxDefaultButton.Button1,MessageBoxOptions.DefaultDesktopOnly,false);
 		}
@@ -144,7 +152,82 @@ namespace BorgNetClient2
                         
 		    txtMessage.Clear();
 		}
-		
+        static bool CanBeDeserialized(string message)
+        {
+            try
+            {
+                BorgNetLib.Message msg = (BorgNetLib.Message)message.XmlDeserialize(typeof(BorgNetLib.Message));
+
+                //TODO: Check validity of XML here. 
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        internal void SyncThread()
+        {
+
+            while (true)
+            {
+                try
+                {
+                    if (user.Net.Connected)
+                    {
+                        //Message message = new Message(txt, user);
+                        NetworkStream serverStream = user.Net.Socket.GetStream();
+
+                        String dataFromClient = RecieveData(serverStream, user.Net.Socket);
+                        if (CanBeDeserialized(dataFromClient))
+                        {
+                            BorgNetLib.Message message = (BorgNetLib.Message)dataFromClient.XmlDeserialize(typeof(BorgNetLib.Message));
+                            messageQueue.Add(message);
+                        }
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    //Log.Error(e);
+                    //break;
+                }
+            }
+        }
+
+        private static String RecieveData(NetworkStream stream, TcpClient client)
+        {
+
+            byte[] bytesFrom = new byte[client.ReceiveBufferSize];
+            string dataFromClient = null;
+
+            stream.Read(bytesFrom, 0, (int)client.ReceiveBufferSize);
+            dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom).Trim();
+            dataFromClient = RemoveTroublesomeCharacters(dataFromClient);
+
+            return dataFromClient;
+        }
+        public static string RemoveTroublesomeCharacters(string inString)
+        {
+            if (inString == null) return null;
+
+            StringBuilder newString = new StringBuilder();
+            char ch;
+
+            for (int i = 0; i < inString.Length; i++)
+            {
+
+                ch = inString[i];
+                // remove any characters outside the valid UTF-8 range as well as all control characters
+                // except tabs and new lines
+                if ((ch < 0x00FD && ch > 0x001F) || ch == '\t' || ch == '\n' || ch == '\r')
+                {
+                    newString.Append(ch);
+                }
+            }
+            return newString.ToString();
+
+        }
 		void ClockConnectionTick(object sender, EventArgs e)
 		{
             if (!user.IsConnected)
@@ -174,12 +257,22 @@ namespace BorgNetClient2
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            String text = user.SendMessage("Has exited the program..").Trim();
+            for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
+            {
+                    Application.OpenForms[i].Close();
+            }
             Application.Exit();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            String text = user.SendMessage("EXIT ME").Trim();
+            String text = user.SendMessage("Has exited the program..").Trim();
+            for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
+            {
+                    Application.OpenForms[i].Close();
+            }
+            Application.Exit();
         }
 
 	}

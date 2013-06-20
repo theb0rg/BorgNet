@@ -34,6 +34,10 @@
             this.btnLogin = new System.Windows.Forms.Button();
             this.lblLogo = new System.Windows.Forms.Label();
             this.test = new System.Windows.Forms.Timer(this.components);
+            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lblUsername = new System.Windows.Forms.Label();
+            this.lblPassword = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,7 +54,7 @@
             // btnLogin
             // 
             this.btnLogin.Font = new System.Drawing.Font("Palatino Linotype", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogin.Location = new System.Drawing.Point(90, 462);
+            this.btnLogin.Location = new System.Drawing.Point(205, 460);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(107, 48);
             this.btnLogin.TabIndex = 1;
@@ -74,11 +78,50 @@
             this.test.Interval = 10;
             this.test.Tick += new System.EventHandler(this.test_Tick);
             // 
+            // txtUsername
+            // 
+            this.txtUsername.Location = new System.Drawing.Point(102, 461);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(100, 20);
+            this.txtUsername.TabIndex = 3;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Enabled = false;
+            this.textBox1.Location = new System.Drawing.Point(102, 488);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 4;
+            // 
+            // lblUsername
+            // 
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUsername.Location = new System.Drawing.Point(-1, 461);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(97, 24);
+            this.lblUsername.TabIndex = 6;
+            this.lblUsername.Text = "Username";
+            // 
+            // lblPassword
+            // 
+            this.lblPassword.AutoSize = true;
+            this.lblPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPassword.Location = new System.Drawing.Point(-1, 488);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(92, 24);
+            this.lblPassword.TabIndex = 7;
+            this.lblPassword.Text = "Password";
+            // 
             // LoginSplash
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(314, 513);
+            this.Controls.Add(this.lblPassword);
+            this.Controls.Add(this.lblUsername);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtUsername);
             this.Controls.Add(this.lblLogo);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.pictureBox1);
@@ -96,5 +139,9 @@
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Label lblLogo;
         private System.Windows.Forms.Timer test;
+        private System.Windows.Forms.TextBox txtUsername;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label lblUsername;
+        private System.Windows.Forms.Label lblPassword;
     }
 }

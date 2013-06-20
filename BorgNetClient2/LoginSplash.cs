@@ -19,12 +19,18 @@ namespace BorgNetClient2
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            Form form = new MainForm();
-            //TODO: Add userthings to form and do validation on user credentials..
-            this.Hide();
-            form.Show();
-            //this.Close();
-
+            if (txtUsername.Text.Trim() != String.Empty)
+            {
+                Form form = new MainForm(txtUsername.Text);
+                //TODO: Add userthings to form and do validation on user credentials..
+                this.Hide();
+                form.Show();
+                //this.Close();
+            }
+            else
+            {
+                MainForm.DisplayError("You need to enter an username.","Login");
+            }
         }
 
         private int MaxLimit = 40;
@@ -52,11 +58,7 @@ namespace BorgNetClient2
             else
             {
                 lblLogo.Font = new Font(lblLogo.Font.FontFamily,lblLogo.Font.Size - 0.1f,lblLogo.Font.Style);
-            }
-
-            
-
-          
+            }      
         }
     }
 }
