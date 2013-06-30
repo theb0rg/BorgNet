@@ -152,20 +152,7 @@ namespace BorgNetClient2
                         
 		    txtMessage.Clear();
 		}
-        static bool CanBeDeserialized(string message)
-        {
-            try
-            {
-                BorgNetLib.Message msg = (BorgNetLib.Message)message.XmlDeserialize(typeof(BorgNetLib.Message));
 
-                //TODO: Check validity of XML here. 
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
         internal void SyncThread()
         {
 
@@ -175,11 +162,10 @@ namespace BorgNetClient2
                 {
                     if (user.Net.Connected)
                     {
-                        //Message message = new Message(txt, user);
-                        NetworkStream serverStream = user.Net.Socket.GetStream();
+                        String dataFromClient = user.Net.Recieve();
 
-                        String dataFromClient = RecieveData(serverStream, user.Net.Socket);
-                        if (CanBeDeserialized(dataFromClient))
+                        //Identify packets here
+                        if (dataFromClient.IsSerializable<BorgNetLib.Message>())
                         {
                             BorgNetLib.Message message = (BorgNetLib.Message)dataFromClient.XmlDeserialize(typeof(BorgNetLib.Message));
                             messageQueue.Add(message);
@@ -194,40 +180,7 @@ namespace BorgNetClient2
                 }
             }
         }
-
-        private static String RecieveData(NetworkStream stream, TcpClient client)
-        {
-
-            byte[] bytesFrom = new byte[client.ReceiveBufferSize];
-            string dataFromClient = null;
-
-            stream.Read(bytesFrom, 0, (int)client.ReceiveBufferSize);
-            dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom).Trim();
-            dataFromClient = RemoveTroublesomeCharacters(dataFromClient);
-
-            return dataFromClient;
-        }
-        public static string RemoveTroublesomeCharacters(string inString)
-        {
-            if (inString == null) return null;
-
-            StringBuilder newString = new StringBuilder();
-            char ch;
-
-            for (int i = 0; i < inString.Length; i++)
-            {
-
-                ch = inString[i];
-                // remove any characters outside the valid UTF-8 range as well as all control characters
-                // except tabs and new lines
-                if ((ch < 0x00FD && ch > 0x001F) || ch == '\t' || ch == '\n' || ch == '\r')
-                {
-                    newString.Append(ch);
-                }
-            }
-            return newString.ToString();
-
-        }
+      
 		void ClockConnectionTick(object sender, EventArgs e)
 		{
             if (!user.IsConnected)
@@ -257,22 +210,26 @@ namespace BorgNetClient2
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            String text = user.SendMessage("Has exited the program..").Trim();
-            for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
-            {
-                    Application.OpenForms[i].Close();
-            }
-            Application.Exit();
+           // String text = user.SendMessage("Has exited the program..").Trim();
+           // for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
+           // {
+           //         Application.OpenForms[i].Close();
+           // }
+           // this.Close();
+            //Application.Exit();
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             String text = user.SendMessage("Has exited the program..").Trim();
-            for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
+            foreach (Form form in Application.OpenForms)
             {
-                    Application.OpenForms[i].Close();
+                if (form.Name == "LoginSplash")
+                {
+                    form.Close();
+                }
             }
-            Application.Exit();
+            
         }
 
 	}

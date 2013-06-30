@@ -85,6 +85,25 @@ namespace BorgNetLib
 			get{ return portNumber.ToString();}
 		}
 
+        public static String RecieveData(NetworkStream stream, TcpClient client)
+        {
+            byte[] bytesFrom = new byte[client.ReceiveBufferSize];
+            string dataFromClient = null;
+
+            stream.Read(bytesFrom, 0, (int)client.ReceiveBufferSize);
+            dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom).Trim();
+            dataFromClient = dataFromClient.UTF8RemoveInvalidCharacters();
+
+            return dataFromClient;
+        }
+
+        public string Recieve()
+        {
+            NetworkStream serverStream = Socket.GetStream();
+            String dataFromClient = RecieveData(serverStream, Socket);
+            return dataFromClient;          
+        }
+
         internal string SendMessage(string txt, User user)
         {
             try

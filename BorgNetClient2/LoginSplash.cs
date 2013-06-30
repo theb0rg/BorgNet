@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace BorgNetClient2
@@ -16,16 +17,26 @@ namespace BorgNetClient2
             InitializeComponent();
             lblLogo.Font = new Font(lblLogo.Font.FontFamily, 1, lblLogo.Font.Style);
         }
-
+        private void FormThread()
+        {
+            Form form = new MainForm(txtUsername.Text);
+            form.Show();
+        }
         private void btnLogin_Click(object sender, EventArgs e)
         {
             if (txtUsername.Text.Trim() != String.Empty)
             {
-                Form form = new MainForm(txtUsername.Text);
+               // Thread thread = new Thread(new ThreadStart(FormThread));
+                //thread.Start();
                 //TODO: Add userthings to form and do validation on user credentials..
+                Form form = new MainForm(txtUsername.Text);
                 this.Hide();
                 form.Show();
+
+               // form.ShowDialog();
+                //Thread.Sleep(2000);
                 //this.Close();
+                //this.Show();
             }
             else
             {
@@ -59,6 +70,11 @@ namespace BorgNetClient2
             {
                 lblLogo.Font = new Font(lblLogo.Font.FontFamily,lblLogo.Font.Size - 0.1f,lblLogo.Font.Style);
             }      
+        }
+
+        private void LoginSplash_FormClosed(object sender, FormClosedEventArgs e)
+        {
+           // Application.Shut
         }
     }
 }

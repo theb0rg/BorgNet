@@ -62,18 +62,6 @@ namespace BorgNetServer
             }
         }
 
-        private static String RecieveData(NetworkStream stream, TcpClient client)
-        {
-
-            byte[] bytesFrom = new byte[client.ReceiveBufferSize];
-            string dataFromClient = null;
-
-            stream.Read(bytesFrom, 0, (int)client.ReceiveBufferSize);
-            dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom).Trim();
-            dataFromClient = RemoveTroublesomeCharacters(dataFromClient);
-
-            return dataFromClient;
-        }
         private static bool ValidateXml(String txt)
         {
             if (ValidXml(txt))
@@ -81,7 +69,7 @@ namespace BorgNetServer
             else
                 Console.WriteLine("Bad XML.");
 
-            if (CanBeDeserialized(txt))
+            if (txt.IsSerializable<Message>())
                 Console.WriteLine("The XML can be deserialized!");
             else
                 Console.WriteLine("Cannot be deserialized : (");
@@ -110,9 +98,9 @@ namespace BorgNetServer
                 {
                     Message message = null;
                     requestCount = requestCount + 1;
-                    String dataFromClient = RecieveData(networkStream, clientSocket);
+                    String dataFromClient = NetService.RecieveData(networkStream, clientSocket);
 
-                    if (CanBeDeserialized(dataFromClient))
+                    if (dataFromClient.IsSerializable<Message>())
                     {
                         message = (Message)dataFromClient.XmlDeserialize(typeof(Message));
                         messageQueue.Add(message);
@@ -159,28 +147,6 @@ namespace BorgNetServer
 
             MainClass.connectedClients.Remove(user);
         }
-
-        public static string RemoveTroublesomeCharacters(string inString)
-        {
-            if (inString == null) return null;
-
-            StringBuilder newString = new StringBuilder();
-            char ch;
-
-            for (int i = 0; i < inString.Length; i++)
-            {
-
-                ch = inString[i];
-                // remove any characters outside the valid UTF-8 range as well as all control characters
-                // except tabs and new lines
-                if ((ch < 0x00FD && ch > 0x001F) || ch == '\t' || ch == '\n' || ch == '\r')
-                {
-                    newString.Append(ch);
-                }
-            }
-            return newString.ToString();
-
-        }
         static bool ValidXml(string xml)
         {
 
@@ -197,22 +163,6 @@ namespace BorgNetServer
                 return false;
             }
         }
-
-        static bool CanBeDeserialized(string message)
-        {
-            try
-            {
-                Message msg = (Message)message.XmlDeserialize(typeof(Message));
-
-                //TODO: Check validity of XML here. 
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
-
         public static int NumberOfTicks { get; set; }
     }
 }

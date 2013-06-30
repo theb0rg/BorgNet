@@ -127,6 +127,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Name = "LoginSplash";
             this.Text = "LoginSplash";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LoginSplash_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
