@@ -1,4 +1,5 @@
 ﻿using BorgNetLib;
+using BorgNetLib.Packages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,13 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Xml.Linq;
+using System.Data.Entity;
 
 namespace BorgNetServer
 {
     public class Server
     {
-        public List<Message> messageQueue = new List<Message>();
+        public List<TextMessage> messageQueue = new List<TextMessage>();
 
         public void AcceptConnections()
         {     
@@ -26,7 +28,7 @@ namespace BorgNetServer
 				Thread ctThread = new Thread(new ParameterizedThreadStart(this.Accept));
 				ctThread.Start(client);
 
-                Console.WriteLine("A client connected!");
+                Console.WriteLine("Incoming hail");
 			}
 
 			}
@@ -43,7 +45,7 @@ namespace BorgNetServer
 			}
         }
 
-        public void Broadcast(Message message)
+        public void Broadcast(TextMessage message)
         {
             foreach (User client in MainClass.connectedClients)
             {
@@ -52,7 +54,7 @@ namespace BorgNetServer
                     if (client.Net.Connected)
                     {
                         Byte[] sendBytes = null;
-                        String broadcast = message.SerializeObject<Message>();
+                        String broadcast = message.SerializeObject();
                         sendBytes = Encoding.ASCII.GetBytes(broadcast);
                         NetworkStream stream = client.Net.Socket.GetStream();
                         stream.Write(sendBytes, 0, sendBytes.Length);
@@ -65,14 +67,20 @@ namespace BorgNetServer
         private static bool ValidateXml(String txt)
         {
             if (ValidXml(txt))
-                Console.WriteLine("The XML is Valid!");
+                ConsoleHelper.WriteSuccessLine("The XML is Valid!");
             else
-                Console.WriteLine("Bad XML.");
+                ConsoleHelper.WriteWarningLine("Bad XML.");
 
             if (txt.IsSerializable<Message>())
-                Console.WriteLine("The XML can be deserialized!");
+                ConsoleHelper.WriteSuccessLine("The XML can be deserialized! Message");
             else
-                Console.WriteLine("Cannot be deserialized : (");
+            if (txt.IsSerializable<TextMessage>())
+                ConsoleHelper.WriteSuccessLine("The XML can be deserialized! TextMessage");
+            else
+            if (txt.IsSerializable<LoginMessage>())
+                ConsoleHelper.WriteSuccessLine("The XML can be deserialized! LoginMessage");
+            else
+                ConsoleHelper.WriteWarningLine("Cannot be deserialized : (");
 
             return true;
         }
@@ -84,44 +92,58 @@ namespace BorgNetServer
 
             TcpClient clientSocket = (TcpClient)client;
             NetworkStream networkStream = clientSocket.GetStream();
-
-            bool InitialRequest = true;
-
             int requestCount = 0;
             Byte[] sendBytes = null;
             string serverResponse = null;
             User user = null;
+            try
+            {
+            while (true)
+            {
+                String dataFromClient = NetService.RecieveData(networkStream, clientSocket);
+                if (dataFromClient.IsSerializable<LoginMessage>())
+                {
+                    LoginMessage loginMessage = (LoginMessage)dataFromClient.XmlDeserialize(typeof(LoginMessage));
+                    user = AuthenticateUser(loginMessage);
+
+                    ValidateXml(dataFromClient);
+
+                    if (user == null)
+                    {
+                        sendBytes = Encoding.ASCII.GetBytes(new LoginMessage(false).SerializeObject());
+                        networkStream.Write(sendBytes, 0, sendBytes.Length);
+                        networkStream.Flush();
+                        ConsoleHelper.WriteErrorLine("Login failed.");
+                        continue;
+                    }
+
+                    ConsoleHelper.WriteSuccessLine("Hailer identified as " + user.Name + ". Sending welcomeparty.." );
+
+                    loginMessage.Successful = true;
+                    sendBytes = Encoding.ASCII.GetBytes(loginMessage.SerializeObject());
+                    networkStream.Write(sendBytes, 0, sendBytes.Length);
+                    networkStream.Flush();
+
+                        user.Net.Socket = clientSocket;
+                        MainClass.connectedClients.Add(user);
+                    break;
+                }
+            }
 
             while (true)
             {
                 try
                 {
-                    Message message = null;
+                    TextMessage message = null;
                     requestCount = requestCount + 1;
                     String dataFromClient = NetService.RecieveData(networkStream, clientSocket);
 
-                    if (dataFromClient.IsSerializable<Message>())
+                    if (dataFromClient.IsSerializable<TextMessage>())
                     {
-                        message = (Message)dataFromClient.XmlDeserialize(typeof(Message));
+                        message = (TextMessage)dataFromClient.XmlDeserialize(typeof(TextMessage));
                         messageQueue.Add(message);
                     }
 
-                    if (InitialRequest)
-                    {
-                        if (message == null)
-                        {
-                            ConsoleHelper.WriteErrorLine("An unknown user logged in. Could not parse message.");
-                        }
-                        else
-                        {
-                            ConsoleHelper.WriteSuccessLine(String.Format("User {0} is logged in.", message.SenderUser.Name));
-                        }
-
-                        user = message.SenderUser;
-                        user.Net.Socket = clientSocket;
-                        MainClass.connectedClients.Add(user);
-                        InitialRequest = false;
-                    }
                     Broadcast(message);
                     Console.WriteLine(dataFromClient);
 
@@ -133,19 +155,49 @@ namespace BorgNetServer
                     networkStream.Flush();
                     Console.WriteLine(" >> " + serverResponse);
                 }
-                catch (SocketException exception)
+                catch (System.InvalidOperationException ioex)
                 {
-                    ConsoleHelper.WriteErrorLine("A client disconnected! ... : (");
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    ConsoleHelper.WriteErrorLine("Disconnecting client due to: " + ex.ToString());
-                    break;
+                    ConsoleHelper.WriteErrorLine("Recieved message is invalid.");
                 }
             }
+                }
+            catch (SocketException exception)
+            {
+                ConsoleHelper.WriteErrorLine("A client disconnected! ... : (");
+            }
+            catch (Exception ex)
+            {
+                ConsoleHelper.WriteErrorLine("Disconnecting client due to: " + ex.ToString());
+            }
 
+            if (user.Net.Connected)
+            {
+                user.Net.Disconnect();
+            }
             MainClass.connectedClients.Remove(user);
+        }
+
+        private User AuthenticateUser(LoginMessage loginMessage)
+        {
+            if (loginMessage == null)
+            {
+                return null;
+            }
+
+            foreach (User user in MainClass.connectedClients)
+            {
+                if (loginMessage.Username == user.Name)
+                {
+                    return null;
+                }
+            }
+            
+
+            //if(Password and stuff is correct ( Also check socket ))
+            loginMessage.Successful = true;
+           // else
+            //loginMessage.Successful = false;
+            return loginMessage.SenderUser;
         }
         static bool ValidXml(string xml)
         {

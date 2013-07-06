@@ -35,7 +35,7 @@
             this.lblLogo = new System.Windows.Forms.Label();
             this.test = new System.Windows.Forms.Timer(this.components);
             this.txtUsername = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
             this.lblUsername = new System.Windows.Forms.Label();
             this.lblPassword = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -81,17 +81,19 @@
             // txtUsername
             // 
             this.txtUsername.Location = new System.Drawing.Point(102, 461);
+            this.txtUsername.MaxLength = 20;
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(100, 20);
             this.txtUsername.TabIndex = 3;
             // 
-            // textBox1
+            // txtPassword
             // 
-            this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(102, 488);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 4;
+            this.txtPassword.Enabled = false;
+            this.txtPassword.Location = new System.Drawing.Point(102, 488);
+            this.txtPassword.MaxLength = 20;
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(100, 20);
+            this.txtPassword.TabIndex = 4;
             // 
             // lblUsername
             // 
@@ -120,7 +122,7 @@
             this.ClientSize = new System.Drawing.Size(314, 513);
             this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.lblUsername);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtUsername);
             this.Controls.Add(this.lblLogo);
             this.Controls.Add(this.btnLogin);
@@ -141,7 +143,7 @@
         private System.Windows.Forms.Label lblLogo;
         private System.Windows.Forms.Timer test;
         private System.Windows.Forms.TextBox txtUsername;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.Label lblPassword;
     }

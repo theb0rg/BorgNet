@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Linq;
+using BorgNetLib.Packages;
 
 namespace BorgNetClient2
 {
@@ -25,21 +26,21 @@ namespace BorgNetClient2
 		private String ServerIpAdress = "85.230.218.187";
 		private int ServerPortAdress = 1234;
 
-		public MainForm(String Username)
+		public MainForm(User user)
 		{
 			InitializeComponent();
             CreateGrid();
 			txtMessage.Text = defaultTxtMessage;
-            ConnectionSetting connection = new ConnectionSetting(ServerIpAdress, ServerPortAdress.ToString());
 			
 			DisableChatGui();
 
-            if (user.Login(Username,"",connection))
+            if (user != null)
             {
                 EnableChatGui();
                 SetBarConnected();
                 clockConnection.Enabled = true;
                 clockConnection.Start();
+                this.user = user;
             }
 
             Thread ctThread = new Thread(new ThreadStart(this.SyncThread));
@@ -148,7 +149,7 @@ namespace BorgNetClient2
 		{
 
             String text = user.SendMessage(txtMessage.Text).Trim();
-            messageQueue.Add(new BorgNetLib.Message(txtMessage.Text,user));
+            messageQueue.Add(new TextMessage(txtMessage.Text, user));
                         
 		    txtMessage.Clear();
 		}

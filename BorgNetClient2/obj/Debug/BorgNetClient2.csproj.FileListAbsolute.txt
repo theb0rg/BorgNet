@@ -1,4 +1,3 @@
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetClient2.exe.config
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetClient2.exe
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetClient2.pdb
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetLib.dll

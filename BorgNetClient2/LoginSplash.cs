@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BorgNetLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,9 +20,13 @@ namespace BorgNetClient2
         }
         private void FormThread()
         {
-            Form form = new MainForm(txtUsername.Text);
-            form.Show();
+           // Form form = new MainForm(txtUsername.Text);
+            //form.Show();
         }
+
+        private String ServerIpAdress = "85.230.218.187";
+        private int ServerPortAdress = 1234;
+
         private void btnLogin_Click(object sender, EventArgs e)
         {
             if (txtUsername.Text.Trim() != String.Empty)
@@ -29,14 +34,19 @@ namespace BorgNetClient2
                // Thread thread = new Thread(new ThreadStart(FormThread));
                 //thread.Start();
                 //TODO: Add userthings to form and do validation on user credentials..
-                Form form = new MainForm(txtUsername.Text);
-                this.Hide();
-                form.Show();
 
-               // form.ShowDialog();
-                //Thread.Sleep(2000);
-                //this.Close();
-                //this.Show();
+                User user = new User();
+                ConnectionSetting connection = new ConnectionSetting(ServerIpAdress, ServerPortAdress.ToString());
+                if (user.Login(txtUsername.Text.Trim(), txtPassword.Text.Trim(), connection))
+                {
+                    Form form = new MainForm(user);
+                    this.Hide();
+                    form.Show();
+                }
+                else
+                {
+                    MainForm.DisplayError("Invalid credentials..","Error");
+                }
             }
             else
             {
