@@ -19,7 +19,7 @@ namespace BorgNetClient2
 	{
 		private String defaultTxtMessage = "Enter text here.";
 
-        DeepBindingList<BorgNetLib.Message> messageQueue = new DeepBindingList<BorgNetLib.Message>();
+        DeepBindingList<TextMessage> messageQueue = new DeepBindingList<TextMessage>();
 
 
         private User user = new User();
@@ -166,9 +166,9 @@ namespace BorgNetClient2
                         String dataFromClient = user.Net.Recieve();
 
                         //Identify packets here
-                        if (dataFromClient.IsSerializable<BorgNetLib.Message>())
+                        if (dataFromClient.IsSerializable<TextMessage>())
                         {
-                            BorgNetLib.Message message = (BorgNetLib.Message)dataFromClient.XmlDeserialize(typeof(BorgNetLib.Message));
+                            TextMessage message = (TextMessage)dataFromClient.XmlDeserialize(typeof(TextMessage));
                             messageQueue.Add(message);
                         }
                     }

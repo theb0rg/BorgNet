@@ -9,3 +9,4 @@ C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.csproj.GenerateResource.Cache
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.exe
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Debug\BorgNetClient2.pdb
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Debug\BorgNetClient2.exe.config

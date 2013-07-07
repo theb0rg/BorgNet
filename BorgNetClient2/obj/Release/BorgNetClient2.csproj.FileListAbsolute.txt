@@ -1,8 +1,0 @@
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Release\BorgNetClient2.exe.config
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Release\BorgNetClient2.exe
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\bin\Release\BorgNetLib.dll
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Release\BorgNetClient2.LoginSplash.resources
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Release\BorgNetClient2.MainForm.resources
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Release\BorgNetClient2.Properties.Resources.resources
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Release\BorgNetClient2.csproj.GenerateResource.Cache
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetClient2\obj\Release\BorgNetClient2.exe

@@ -1,3 +1,0 @@
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetLib\bin\Release\BorgNetLib.dll
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetLib\obj\Release\BorgNetLib.csprojResolveAssemblyReference.cache
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetLib\obj\Release\BorgNetLib.dll

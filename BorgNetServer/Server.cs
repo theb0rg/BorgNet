@@ -104,20 +104,21 @@ namespace BorgNetServer
                 if (dataFromClient.IsSerializable<LoginMessage>())
                 {
                     LoginMessage loginMessage = (LoginMessage)dataFromClient.XmlDeserialize(typeof(LoginMessage));
-                    user = AuthenticateUser(loginMessage);
+                    loginMessage = AuthenticateUser(loginMessage);
 
                     ValidateXml(dataFromClient);
 
-                    if (user == null)
+                    if (!loginMessage.Successful)
                     {
                         sendBytes = Encoding.ASCII.GetBytes(new LoginMessage(false).SerializeObject());
                         networkStream.Write(sendBytes, 0, sendBytes.Length);
                         networkStream.Flush();
-                        ConsoleHelper.WriteErrorLine("Login failed.");
+                        ConsoleHelper.WriteErrorLine("Access denied.");
                         continue;
                     }
 
-                    ConsoleHelper.WriteSuccessLine("Hailer identified as " + user.Name + ". Sending welcomeparty.." );
+                    user = loginMessage.SenderUser;
+                    ConsoleHelper.WriteSuccessLine("Access granted." + user.Name + ". Sending welcomeparty.." );
 
                     loginMessage.Successful = true;
                     sendBytes = Encoding.ASCII.GetBytes(loginMessage.SerializeObject());
@@ -170,34 +171,37 @@ namespace BorgNetServer
                 ConsoleHelper.WriteErrorLine("Disconnecting client due to: " + ex.ToString());
             }
 
-            if (user.Net.Connected)
+            if (user != null)
             {
-                user.Net.Disconnect();
-            }
+                if (user.Net.Connected)
+                {
+                    user.Net.Disconnect();
+                }
             MainClass.connectedClients.Remove(user);
+            }
         }
 
-        private User AuthenticateUser(LoginMessage loginMessage)
+        private LoginMessage AuthenticateUser(LoginMessage loginMessage)
         {
             if (loginMessage == null)
             {
                 return null;
             }
-
+            ConsoleHelper.WriteLine("A captain named " + loginMessage.Username + " is trying to access the systems..");
             foreach (User user in MainClass.connectedClients)
             {
                 if (loginMessage.Username == user.Name)
                 {
-                    return null;
+                    ConsoleHelper.WriteErrorLine("Access denied. Captain already logged in.");
+                    loginMessage.Successful = false;
+                    return loginMessage;
                 }
             }
-            
-
             //if(Password and stuff is correct ( Also check socket ))
             loginMessage.Successful = true;
            // else
             //loginMessage.Successful = false;
-            return loginMessage.SenderUser;
+            return loginMessage;
         }
         static bool ValidXml(string xml)
         {
