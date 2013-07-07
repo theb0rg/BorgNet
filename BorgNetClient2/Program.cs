@@ -16,6 +16,7 @@ namespace BorgNetClient2
 	/// </summary>
 	internal sealed class Program
 	{
+        public static bool Shutdown = false;
 		/// <summary>
 		/// Program entry point.
 		/// </summary>
@@ -24,7 +25,9 @@ namespace BorgNetClient2
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new LoginSplash());
+            LoginSplash instance = new LoginSplash();
+			Application.Run(instance);
+
 		}
 		
 	}

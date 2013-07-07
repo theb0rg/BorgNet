@@ -57,6 +57,7 @@ namespace BorgNetLib
                 {
                     LoginMessage loginMessage = (LoginMessage)dataFromClient.XmlDeserialize(typeof(LoginMessage));
 
+                    //verify loginMessage here
                     if(loginMessage != null)
                     return loginMessage.Successful;
                 }
@@ -83,6 +84,7 @@ namespace BorgNetLib
         {
             if (Connected)
             {
+                //TODO: Send disconnect message..
                 socket.Close();
             }
         }

@@ -21,16 +21,17 @@ namespace BorgNetClient2
 
         DeepBindingList<TextMessage> messageQueue = new DeepBindingList<TextMessage>();
 
-
+        private LoginSplash parentForm;
         private User user = new User();
 		private String ServerIpAdress = "85.230.218.187";
 		private int ServerPortAdress = 1234;
 
-		public MainForm(User user)
+		public MainForm(User user, LoginSplash loginForm)
 		{
 			InitializeComponent();
             CreateGrid();
 			txtMessage.Text = defaultTxtMessage;
+            parentForm = loginForm;
 			
 			DisableChatGui();
 
@@ -179,6 +180,11 @@ namespace BorgNetClient2
                     //Log.Error(e);
                     //break;
                 }
+
+                if (Program.Shutdown)
+                {
+                    break;
+                }
             }
         }
       
@@ -222,15 +228,10 @@ namespace BorgNetClient2
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            String text = user.SendMessage("Has exited the program..").Trim();
-            foreach (Form form in Application.OpenForms)
-            {
-                if (form.Name == "LoginSplash")
-                {
-                    form.Close();
-                }
-            }
-            
+            Program.Shutdown = true;
+            user.Net.Disconnect();
+            parentForm.Shutdown();
+           // String text = user.SendMessage("Has exited the program..").Trim();            
         }
 
 	}

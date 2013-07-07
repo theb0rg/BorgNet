@@ -31,15 +31,11 @@ namespace BorgNetClient2
         {
             if (txtUsername.Text.Trim() != String.Empty)
             {
-               // Thread thread = new Thread(new ThreadStart(FormThread));
-                //thread.Start();
-                //TODO: Add userthings to form and do validation on user credentials..
-
                 User user = new User();
                 ConnectionSetting connection = new ConnectionSetting(ServerIpAdress, ServerPortAdress.ToString());
                 if (user.Login(txtUsername.Text.Trim(), txtPassword.Text.Trim(), connection))
                 {
-                    Form form = new MainForm(user);
+                    Form form = new MainForm(user, this);
                     this.Hide();
                     form.Show();
                 }
@@ -85,6 +81,12 @@ namespace BorgNetClient2
         private void LoginSplash_FormClosed(object sender, FormClosedEventArgs e)
         {
            // Application.Shut
+        }
+
+        public void Shutdown()
+        {
+            this.Close();
+            Application.Exit();
         }
     }
 }

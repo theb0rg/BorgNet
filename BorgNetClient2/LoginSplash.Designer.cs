@@ -127,7 +127,11 @@
             this.Controls.Add(this.lblLogo);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.pictureBox1);
+            this.MaximumSize = new System.Drawing.Size(330, 551);
+            this.MinimumSize = new System.Drawing.Size(330, 551);
             this.Name = "LoginSplash";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LoginSplash";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LoginSplash_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
