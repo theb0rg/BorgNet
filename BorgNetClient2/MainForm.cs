@@ -19,7 +19,7 @@ namespace BorgNetClient2
 	{
 		private String defaultTxtMessage = "Enter text here.";
 
-        DeepBindingList<TextMessage> messageQueue = new DeepBindingList<TextMessage>();
+0 00       DeepBindingList<TextMessage> messageQueue = new DeepBindingList<TextMessage>();
 
         private LoginSplash parentForm;
         private User user = new User();

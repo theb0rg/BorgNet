@@ -130,7 +130,7 @@ namespace BorgNetLib
             }
         }
 
-        internal bool Send(Object Package)
+        public bool Send(Object Package)
         {
            try
            {

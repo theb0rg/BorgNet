@@ -8,6 +8,21 @@ namespace BorgNetLib
 	public static class Extensions
 	{
 
+        public static bool Between(this int value, int left, int right)
+        {
+            return value > left && value < right;
+        }
+
+        public static bool IsDifference(this int value, int difference)
+        {
+            return value.Between(value - difference, value + difference);
+        }
+
+        public static int Difference(this int value, int otherValue)
+        {
+            return value - otherValue;
+        }
+
         public static string UTF8RemoveInvalidCharacters(this string str)
         {
             if (str == null) return null;

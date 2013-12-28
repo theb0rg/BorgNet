@@ -42,6 +42,7 @@ namespace BorgNetServer
                             break;
                     }
                 }
+                Thread.Sleep(10);
             }
 		}
        

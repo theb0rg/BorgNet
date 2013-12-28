@@ -24,6 +24,7 @@ namespace BorgNetServer
 			serverSocket.Start();
     
 			while(true){
+                Thread.Sleep(1);
                 TcpClient client = serverSocket.AcceptTcpClient();
 				Thread ctThread = new Thread(new ParameterizedThreadStart(this.Accept));
 				ctThread.Start(client);
@@ -79,8 +80,10 @@ namespace BorgNetServer
             else
             if (txt.IsSerializable<LoginMessage>())
                 ConsoleHelper.WriteSuccessLine("The XML can be deserialized! LoginMessage");
+            if (txt.IsSerializable<PongUpdateMessage>())
+                ConsoleHelper.WriteSuccessLine("The XML can be deserialized! PongUpdatePackage");
             else
-                ConsoleHelper.WriteWarningLine("Cannot be deserialized : (");
+                ConsoleHelper.WriteWarningLine("Cannot be deserialized : (" + txt);
 
             return true;
         }
@@ -135,26 +138,36 @@ namespace BorgNetServer
             {
                 try
                 {
-                    TextMessage message = null;
                     requestCount = requestCount + 1;
                     String dataFromClient = NetService.RecieveData(networkStream, clientSocket);
 
-                    if (dataFromClient.IsSerializable<TextMessage>())
+                    if (dataFromClient.IsSerializable<PongUpdateMessage>())
                     {
-                        message = (TextMessage)dataFromClient.XmlDeserialize(typeof(TextMessage));
-                        messageQueue.Add(message);
+                        PongUpdateMessage message = (PongUpdateMessage)dataFromClient.XmlDeserialize(typeof(PongUpdateMessage));
+                        //messageQueue.Add(message);
+                        Broadcast(message);
                     }
+                    else
+                    {
+                        if (dataFromClient.IsSerializable<TextMessage>())
+                        {
+                            TextMessage message = (TextMessage)dataFromClient.XmlDeserialize(typeof(TextMessage));
+                            messageQueue.Add(message);
+                            Broadcast(message);
 
-                    Broadcast(message);
-                    Console.WriteLine(dataFromClient);
 
-                    ValidateXml(dataFromClient);
+                        Console.WriteLine(dataFromClient);
 
-                    serverResponse = "Message recieved. Count: " + requestCount;
-                    sendBytes = Encoding.ASCII.GetBytes(serverResponse);
-                    networkStream.Write(sendBytes, 0, sendBytes.Length);
-                    networkStream.Flush();
-                    Console.WriteLine(" >> " + serverResponse);
+                        //ValidateXml(dataFromClient);
+
+                        serverResponse = "Message recieved. Count: " + requestCount;
+                        Console.WriteLine(" >> " + serverResponse);
+                        //Thread.Sleep(1);
+                        sendBytes = Encoding.ASCII.GetBytes(serverResponse);
+                        networkStream.Write(sendBytes, 0, sendBytes.Length);
+                        networkStream.Flush();
+                        }
+                    }
                 }
                 catch (System.InvalidOperationException ioex)
                 {
@@ -178,6 +191,26 @@ namespace BorgNetServer
                     user.Net.Disconnect();
                 }
             MainClass.connectedClients.Remove(user);
+            }
+        }
+
+        private void Broadcast(PongUpdateMessage message)
+        {
+            //TODO: Filter sessions here
+            foreach (User client in MainClass.connectedClients)
+            {
+                if (client.Name != message.SenderUser.Name)
+                {
+                    if (client.Net.Connected)
+                    {
+                        Byte[] sendBytes = null;
+                        String broadcast = message.SerializeObject();
+                        sendBytes = Encoding.ASCII.GetBytes(broadcast);
+                        NetworkStream stream = client.Net.Socket.GetStream();
+                        stream.Write(sendBytes, 0, sendBytes.Length);
+                        stream.Flush();
+                    }
+                }
             }
         }
 

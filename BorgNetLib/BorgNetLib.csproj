@@ -39,6 +39,8 @@
   <ItemGroup>
     <Compile Include="Packages\Broadcast.cs" />
     <Compile Include="Packages\LoginMessage.cs" />
+    <Compile Include="Packages\PongBallMessage.cs" />
+    <Compile Include="Packages\PongUpdateMessage.cs" />
     <Compile Include="Packages\TextMessage.cs" />
     <Compile Include="Services\CacheService.cs" />
     <Compile Include="Entities\ConnectionSetting.cs" />

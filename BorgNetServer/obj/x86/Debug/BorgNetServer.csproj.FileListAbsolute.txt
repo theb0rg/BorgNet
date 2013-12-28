@@ -2,6 +2,6 @@ C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\bin\Debug\BorgNetServer.e
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\bin\Debug\BorgNetServer.pdb
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\bin\Debug\BorgNetLib.dll
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\bin\Debug\BorgNetLib.pdb
+C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\obj\x86\Debug\BorgNetServer.csprojResolveAssemblyReference.cache
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\obj\x86\Debug\BorgNetServer.exe
 C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\obj\x86\Debug\BorgNetServer.pdb
-C:\Users\BORG\Documents\Projects\BorgNet\BorgNetServer\obj\x86\Debug\BorgNetServer.csprojResolveAssemblyReference.cache

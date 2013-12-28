@@ -27,6 +27,6 @@ Global
 		{A0E6D051-BD99-4D83-B383-29EA26387BB6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = BorgNetClient2\BorgNetClient2.csproj
+		StartupItem = BorgNetServer\BorgNetServer.csproj
 	EndGlobalSection
 EndGlobal
