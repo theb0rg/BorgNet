@@ -142,11 +142,18 @@ namespace BorgNetServer
                     requestCount = requestCount + 1;
                     Thread.Sleep(1);
                     String dataFromClient = NetService.RecieveData(networkStream, clientSocket);
+
                     if (dataFromClient.Length == 0) continue;
 
                         if (dataFromClient[0] == '$')
                         {
                             Broadcast(dataFromClient, user);
+                        }
+
+                        if (dataFromClient == "EXIT")
+                        {
+                            ConsoleHelper.WriteLine("User " + user.Name + " exited");
+                            break;
                         }
 
                     if (dataFromClient.IsSerializable<PongUpdateMessage>())

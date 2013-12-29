@@ -38,6 +38,9 @@ namespace BorgNetServer
                         case ConsoleKey.D2:
                             Console.WriteLine(Server.NumberOfTicks);
                             break;
+                        case ConsoleKey.Enter:
+                            ShowHelp();
+                            break;
                         default:
                             break;
                     }
@@ -45,6 +48,16 @@ namespace BorgNetServer
                 Thread.Sleep(10);
             }
 		}
+
+        private static void ShowHelp()
+        {
+            Console.WriteLine();
+            ConsoleHelper.WriteSuccessLine("HELP HAS ARRIVED");
+            ConsoleHelper.WriteLine("1. Show connected clients");
+            ConsoleHelper.WriteLine("2. Display number of ticks/Recieved messages");
+            ConsoleHelper.WriteLine("Enter. Display this message");
+
+        }
        
 	}
 }
