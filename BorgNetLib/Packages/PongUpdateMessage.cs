@@ -39,15 +39,20 @@ namespace BorgNetLib.Packages
             set;
         }*/
 
-        public int[] LastMovements
+      /*  public List<int> LastMovements
         {
             get;
             set;
-        }
+        }*/
         public int Y
         {
             get;
             set;
+        }
+
+        public String MinimalPositionPacket
+        {
+            get { return "$"+Y; }
         }
     }
 }

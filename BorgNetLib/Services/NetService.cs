@@ -153,6 +153,29 @@ namespace BorgNetLib
            return true;
         }
 
+        public bool Send(String Package)
+        {
+            try
+            {
+                if (Connected)
+                {
+                    NetworkStream serverStream = socket.GetStream();
+
+                    byte[] outStream = System.Text.Encoding.ASCII.GetBytes(Package);
+                    serverStream.Write(outStream, 0, outStream.Length);
+                    serverStream.Flush();
+                }
+                else
+                    return false;
+            }
+            catch (Exception e)
+            {
+                //Log.Error(e);
+                return false;
+            }
+            return true;
+        }
+
         internal string SendMessage(string txt, User user)
         {
 

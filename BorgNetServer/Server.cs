@@ -132,6 +132,7 @@ namespace BorgNetServer
                         MainClass.connectedClients.Add(user);
                     break;
                 }
+					return;
             }
 
             while (true)
@@ -139,7 +140,14 @@ namespace BorgNetServer
                 try
                 {
                     requestCount = requestCount + 1;
+                    Thread.Sleep(1);
                     String dataFromClient = NetService.RecieveData(networkStream, clientSocket);
+                    if (dataFromClient.Length == 0) continue;
+
+                        if (dataFromClient[0] == '$')
+                        {
+                            Broadcast(dataFromClient, user);
+                        }
 
                     if (dataFromClient.IsSerializable<PongUpdateMessage>())
                     {
@@ -191,6 +199,26 @@ namespace BorgNetServer
                     user.Net.Disconnect();
                 }
             MainClass.connectedClients.Remove(user);
+            }
+        }
+
+        private void Broadcast(String message, User user)
+        {
+            //TODO: Filter sessions here
+            foreach (User client in MainClass.connectedClients)
+            {
+                if (client.Name != user.Name)
+                {
+                    if (client.Net.Connected)
+                    {
+                        Byte[] sendBytes = null;
+                        //String broadcast = message.SerializeObject();
+                        sendBytes = Encoding.ASCII.GetBytes(message);
+                        NetworkStream stream = client.Net.Socket.GetStream();
+                        stream.Write(sendBytes, 0, sendBytes.Length);
+                        stream.Flush();
+                    }
+                }
             }
         }
 
