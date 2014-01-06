@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading;
 using System.Xml.Linq;
 using System.Data.Entity;
+using System.IO;
+using ServiceStack.Text;
 
 namespace BorgNetServer
 {
@@ -50,7 +52,7 @@ namespace BorgNetServer
         {
             foreach (User client in MainClass.connectedClients)
             {
-                if (client.Name != message.SenderUser.Name)
+                if (client.Name != message.SenderUser)
                 {
                     if (client.Net.Connected)
                     {
@@ -70,22 +72,92 @@ namespace BorgNetServer
             if (ValidXml(txt))
                 ConsoleHelper.WriteSuccessLine("The XML is Valid!");
             else
+            {
                 ConsoleHelper.WriteWarningLine("Bad XML.");
+                return false;
+            }
 
-            if (txt.IsSerializable<Message>())
-                ConsoleHelper.WriteSuccessLine("The XML can be deserialized! Message");
-            else
+            //if (txt.IsSerializable<Message>())
+            //    ConsoleHelper.WriteSuccessLine("The XML can be deserialized! Message");
+           // else
             if (txt.IsSerializable<TextMessage>())
                 ConsoleHelper.WriteSuccessLine("The XML can be deserialized! TextMessage");
             else
             if (txt.IsSerializable<LoginMessage>())
                 ConsoleHelper.WriteSuccessLine("The XML can be deserialized! LoginMessage");
-            if (txt.IsSerializable<PongUpdateMessage>())
-                ConsoleHelper.WriteSuccessLine("The XML can be deserialized! PongUpdatePackage");
+           // if (txt.IsSerializable<PongUpdateMessage>())
+            //    ConsoleHelper.WriteSuccessLine("The XML can be deserialized! PongUpdatePackage");
             else
                 ConsoleHelper.WriteWarningLine("Cannot be deserialized : (" + txt);
 
             return true;
+        }
+
+        public void ProcessResponse(Byte[] data, int index, Int32 count)
+        {
+                using (var stream = new MemoryStream(data, index, count))
+                {
+                    //var serializer = new XmlSerializer(typeof(ClientPacket));
+
+                    //var packet = serializer.Deserialize(stream);
+
+                    // Do something with the packet
+                    //serverStream.CopyTo(stream);
+                    String asd = System.Text.Encoding.ASCII.GetString(data).Trim();
+                    JsonObject message = JsonSerializer.DeserializeFromStream<JsonObject>(stream);
+                    if (message == null) return;
+                    if (message["PackageType"] == null) return;
+
+                    PackageType type = (PackageType)Enum.Parse(typeof(PackageType), message["PackageType"]);
+
+                    switch (type)
+                    {
+                        case PackageType.PaddleUpdate:
+                            Broadcast(message);
+                            break;
+                    }
+                    //TestMessage test = (TestMessage)message;
+
+                }
+
+         
+        }
+
+        private void Broadcast(JsonObject message)
+        {
+            //TODO: Filter sessions here
+            foreach (User client in MainClass.connectedClients)
+            {
+                String username = message["SenderUser"];
+                if (client.Name != username)
+                {
+                    if (client.Net.Connected)
+                    {
+                        //Byte[] sendBytes = null;
+                        //String broadcast = message.SerializeObject();
+                        //sendBytes = Encoding.ASCII.GetBytes(message);
+                        
+                        NetworkStream stream = client.Net.Socket.GetStream();
+                        JsonSerializer.SerializeToStream<JsonObject>(message, stream);
+                        //stream.Write(sendBytes, 0, sendBytes.Length);
+                        //stream.Flush();
+                    }
+                }
+            }
+        }
+        public void SocketReceive(Object sender, SocketAsyncEventArgs e)
+        {
+            try{
+
+            ProcessResponse(e.Buffer, 0, e.BytesTransferred);
+
+            NetService.ResetBuffer(e);
+
+            e.AcceptSocket.ReceiveAsync(e);
+                        }
+            catch(InvalidOperationException invalidOperationException){
+                ConsoleHelper.WriteErrorLine("SocketRecieve: invalidOperationException " + invalidOperationException.Message);
+            }
         }
 
         private void Accept(object client)
@@ -119,8 +191,8 @@ namespace BorgNetServer
                         ConsoleHelper.WriteErrorLine("Access denied.");
                         continue;
                     }
-
-                    user = loginMessage.SenderUser;
+                    user = new User();
+                    user.Name = loginMessage.Username;
                     ConsoleHelper.WriteSuccessLine("Access granted." + user.Name + ". Sending welcomeparty.." );
 
                     loginMessage.Successful = true;
@@ -135,54 +207,59 @@ namespace BorgNetServer
 					return;
             }
 
+            var socketAsyncEventArgs = new SocketAsyncEventArgs();
+            socketAsyncEventArgs.Completed += SocketReceive;
+            NetService.StartListening(socketAsyncEventArgs, user.Net.Socket.Client);
+
             while (true)
             {
                 try
                 {
                     requestCount = requestCount + 1;
                     Thread.Sleep(1);
-                    String dataFromClient = NetService.RecieveData(networkStream, clientSocket);
 
-                    if (dataFromClient.Length == 0) continue;
+                    /* String dataFromClient = NetService.RecieveData(networkStream, clientSocket);
 
-                        if (dataFromClient[0] == '$')
-                        {
-                            Broadcast(dataFromClient, user);
-                        }
+                     if (dataFromClient.Length == 0) continue;
 
-                        if (dataFromClient == "EXIT")
-                        {
-                            ConsoleHelper.WriteLine("User " + user.Name + " exited");
-                            break;
-                        }
+                         if (dataFromClient[0] == '$')
+                         {
+                             Broadcast(dataFromClient, user);
+                         }
 
-                    if (dataFromClient.IsSerializable<PongUpdateMessage>())
-                    {
-                        PongUpdateMessage message = (PongUpdateMessage)dataFromClient.XmlDeserialize(typeof(PongUpdateMessage));
-                        //messageQueue.Add(message);
-                        Broadcast(message);
-                    }
-                    else
-                    {
-                        if (dataFromClient.IsSerializable<TextMessage>())
-                        {
-                            TextMessage message = (TextMessage)dataFromClient.XmlDeserialize(typeof(TextMessage));
-                            messageQueue.Add(message);
-                            Broadcast(message);
+                         if (dataFromClient == "EXIT")
+                         {
+                             ConsoleHelper.WriteLine("User " + user.Name + " exited");
+                             break;
+                         }
+
+                     if (dataFromClient.IsSerializable<PongUpdateMessage>())
+                     {
+                         PongUpdateMessage message = (PongUpdateMessage)dataFromClient.XmlDeserialize(typeof(PongUpdateMessage));
+                         //messageQueue.Add(message);
+                         Broadcast(message);
+                     }
+                     else
+                     {
+                         if (dataFromClient.IsSerializable<TextMessage>())
+                         {
+                             TextMessage message = (TextMessage)dataFromClient.XmlDeserialize(typeof(TextMessage));
+                             messageQueue.Add(message);
+                             Broadcast(message);
 
 
-                        Console.WriteLine(dataFromClient);
+                         Console.WriteLine(dataFromClient);
 
-                        //ValidateXml(dataFromClient);
+                         //ValidateXml(dataFromClient);
 
-                        serverResponse = "Message recieved. Count: " + requestCount;
-                        Console.WriteLine(" >> " + serverResponse);
-                        //Thread.Sleep(1);
-                        sendBytes = Encoding.ASCII.GetBytes(serverResponse);
-                        networkStream.Write(sendBytes, 0, sendBytes.Length);
-                        networkStream.Flush();
-                        }
-                    }
+                         serverResponse = "Message recieved. Count: " + requestCount;
+                         Console.WriteLine(" >> " + serverResponse);
+                         //Thread.Sleep(1);
+                         sendBytes = Encoding.ASCII.GetBytes(serverResponse);
+                         networkStream.Write(sendBytes, 0, sendBytes.Length);
+                         networkStream.Flush();
+                         }
+                     }*/
                 }
                 catch (System.InvalidOperationException ioex)
                 {
@@ -234,7 +311,7 @@ namespace BorgNetServer
             //TODO: Filter sessions here
             foreach (User client in MainClass.connectedClients)
             {
-                if (client.Name != message.SenderUser.Name)
+                if (client.Name != message.SenderUser)
                 {
                     if (client.Net.Connected)
                     {

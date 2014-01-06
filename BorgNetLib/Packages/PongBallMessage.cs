@@ -5,14 +5,16 @@ using System.Text;
 
 namespace BorgNetLib.Packages
 {
-    public class PongBallMessage
+    public class PongBallMessage : Message
     {
         public  PongBallMessage()
         {
+            base.PackageType = Packages.PackageType.BallUpdate;
         }
 
-        public  PongBallMessage(int test)
+        public  PongBallMessage(User user) : base(user)
         {
+            base.PackageType = Packages.PackageType.BallUpdate;
         }
 
 

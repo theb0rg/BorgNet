@@ -3,6 +3,10 @@ using System.Net.Sockets;
 using System.Web.Caching;
 using System.Linq;
 using BorgNetLib.Packages;
+using System.Threading;
+using System.IO;
+using System.Net;
+using System.Diagnostics;
 
 namespace BorgNetLib
 {
@@ -50,8 +54,9 @@ namespace BorgNetLib
                 user.Name = Username;
                 Send(new LoginMessage(user));
 
-                String dataFromClient = Recieve();
+                String dataFromClient = ""; //Recieve();
 
+                return true;
                 //Identify packets here
                 if (dataFromClient.IsSerializable<LoginMessage>())
                 {
@@ -85,8 +90,14 @@ namespace BorgNetLib
             if (Connected)
             {
                 //TODO: Send disconnect message..
+                SendExitMessage();
                 socket.Close();
             }
+        }
+
+        private void SendExitMessage()
+        {
+            Send("EXIT");
         }
 
         public bool Reconnect()
@@ -109,20 +120,65 @@ namespace BorgNetLib
             byte[] bytesFrom = new byte[client.ReceiveBufferSize];
             string dataFromClient = null;
 
-            stream.Read(bytesFrom, 0, (int)client.ReceiveBufferSize);
-            dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom).Trim();
+            int length = stream.Read(bytesFrom, 0, client.ReceiveBufferSize);
+            dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom, 0, length).Trim();
             dataFromClient = dataFromClient.UTF8RemoveInvalidCharacters();
 
             return dataFromClient;
         }
+
+        public static void StartListening(SocketAsyncEventArgs e, Socket client)
+        {
+            e.RemoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            ResetBuffer(e);
+           // e.
+            //e.Completed += SocketReceive;
+            e.AcceptSocket = client;
+            client.ReceiveAsync(e);
+        }
+
+        public static void ResetBuffer(SocketAsyncEventArgs e)
+        {
+            var buffer = new Byte[4096];
+
+            e.SetBuffer(buffer, 0, 4096);
+        }
+
+
+
+
 
         public string Recieve()
         {
             try
             {
                 NetworkStream serverStream = Socket.GetStream();
-                String dataFromClient = RecieveData(serverStream, Socket);
-                return dataFromClient;
+               // {
+                    while (!serverStream.DataAvailable)
+                    {
+                        Thread.Sleep(1);
+                    }
+
+                    serverStream.ReadTimeout = 2;
+                   // String dataFromClient = RecieveData(serverStream, Socket);
+                   // return dataFromClient;
+
+                    using (var stream = new MemoryStream())
+                    {
+                     //   byte[] buffer = new byte[2048]; // read in chunks of 2KB
+                     //   int bytesRead;
+                    //    while ((bytesRead = serverStream.Read(buffer, 0, buffer.Length)) > 0)
+                     //   {
+                    //        stream.Write(buffer, 0, bytesRead);
+                    //    }
+
+                        //byte[] result = stream.ToArray();
+                        serverStream.CopyTo(stream);
+                        return System.Text.Encoding.ASCII.GetString(stream.ToArray()).Trim();
+                        //dataFromClient = dataFromClient.UTF8RemoveInvalidCharacters();
+                        // TODO: do something with the result
+                    }
+                //}
             }
             catch (Exception networkException)
                 {
@@ -159,11 +215,35 @@ namespace BorgNetLib
             {
                 if (Connected)
                 {
-                    NetworkStream serverStream = socket.GetStream();
+                   // NetworkStream serverStream = socket.GetStream();
+                   // serverStream.WriteTimeout = 2;
 
-                    byte[] outStream = System.Text.Encoding.ASCII.GetBytes(Package);
-                    serverStream.Write(outStream, 0, outStream.Length);
-                    serverStream.Flush();
+                   // byte[] outStream = System.Text.Encoding.ASCII.GetBytes(Package);
+                   // serverStream.Write(outStream, 0, outStream.Length);
+                   // serverStream.Flush();
+                    byte[] bytedata = System.Text.Encoding.ASCII.GetBytes(Package);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+               // BinaryFormatter bf = new BinaryFormatter();
+
+               // try { bf.Serialize(ms, data); }
+               // catch { return; }
+
+                //bytedata = ms.ToArray();
+            }
+
+            try
+            {
+                lock (Socket)
+                {
+                   // Socket.Client.BeginSend(BitConverter.GetBytes(bytedata.Length), 0, IntSize, SocketFlags.None, EndSend, null);
+                    Socket.Client.BeginSend(bytedata, 0, bytedata.Length, SocketFlags.None, EndSend, null);
+                }
+            }catch(Exception exxx){
+                Debug.Print(exxx.Message);
+            }
+
                 }
                 else
                     return false;
@@ -174,6 +254,11 @@ namespace BorgNetLib
                 return false;
             }
             return true;
+        }
+        private void EndSend(IAsyncResult ar)
+        {
+            try { Socket.Client.EndSend(ar); }
+            catch (Exception exas) { Debug.Print("EndSend:"+exas.Message); }
         }
 
         internal string SendMessage(string txt, User user)

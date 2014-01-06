@@ -9,6 +9,7 @@ namespace BorgNetLib.Packages
     {
         public PongUpdateMessage()
         {
+            base.PackageType = Packages.PackageType.PaddleUpdate;
         }
 
         public PongUpdateMessage(int SessionID, int Player, int Y, TimeSpan gameTime,User user) : base (user)
@@ -17,6 +18,7 @@ namespace BorgNetLib.Packages
             this.Player = Player;
             this.Y = Y;
             this.ElapsedGameTime = gameTime;
+            base.PackageType = Packages.PackageType.PaddleUpdate;
         }
         public TimeSpan ElapsedGameTime
         {

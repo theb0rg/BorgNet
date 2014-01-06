@@ -2,26 +2,34 @@ using System;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using BorgNetLib.Packages;
 
 namespace BorgNetLib
 {
 
 	public class Message
 	{
+        private PackageType type = PackageType.Message;
         private long timestamp;
-        private User user;
+        private String username;
 		public Message()
 		{
-            this.user = new User();
+            this.username = "";
             timestamp = DateTime.Now.ToBinary();
 		}
 
 		public Message (User user)
 		{
-            this.user = user;
+            this.username = user.Name;
             timestamp = DateTime.Now.ToBinary();
 		}
 
+        public PackageType PackageType
+        {
+            get { return type; }
+            set { type = value; }
+
+        }
         public String Timestamp
         {
             get { return timestamp.ToString(); }
@@ -44,10 +52,10 @@ namespace BorgNetLib
             }
         }
 
-        public User SenderUser
+        public String SenderUser
         {
-            get { return user; }
-            set { user = value; }
+            get { return username; }
+            set { username = value; }
         }
 		
 	}

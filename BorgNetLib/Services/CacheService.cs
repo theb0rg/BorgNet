@@ -46,6 +46,7 @@ namespace BorgNetLib
             Cache.NoAbsoluteExpiration,
             TimeSpan.FromSeconds( 3 ) );
       }
+
        public static void Add(String Key, Object Value, int SecondsToLive){
       	
       	Cache.Insert( 

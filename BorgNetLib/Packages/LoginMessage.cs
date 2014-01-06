@@ -13,9 +13,10 @@ namespace BorgNetLib.Packages
         public LoginMessage() : base()
         {
             this.successful = false;
+            base.PackageType = Packages.PackageType.LoginMessage;
 
         }
-        public LoginMessage(bool successful)
+        public LoginMessage(bool successful) : this()
         {
             this.successful = successful;
         }
@@ -23,6 +24,7 @@ namespace BorgNetLib.Packages
         public LoginMessage(User user) : base(user)
         {
             this.successful = false;
+            base.PackageType = Packages.PackageType.LoginMessage;
         }
 
         public bool Successful
@@ -39,8 +41,8 @@ namespace BorgNetLib.Packages
 
         public String Username
         {
-            get { return base.SenderUser.Name; }
-            set { base.SenderUser.Name = value; }
+            get { return base.SenderUser; }
+            set { base.SenderUser = value; }
         }
 
 

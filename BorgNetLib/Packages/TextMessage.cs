@@ -12,10 +12,12 @@ namespace BorgNetLib.Packages
         public TextMessage() : base()
         {
             text = "";
+            base.PackageType = Packages.PackageType.TextMessage;
         }
         public TextMessage(String text, User user) : base(user)
         {
             this.text = text;
+            base.PackageType = Packages.PackageType.TextMessage;
         }
 
         public String Text
